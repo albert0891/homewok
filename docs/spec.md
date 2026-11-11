@@ -1,6 +1,6 @@
 # Homewok v1 Spec
 
-Last updated: 2026-11-10. Status: approved by the user on 2026-11-10.
+Last updated: 2026-11-11. Status: approved by the user on 2026-11-10.
 
 This is the scope of the first version: what we build, in what order, and how we know each step is done. The reasons and the detailed rules live in `docs/decisions.md`. The visual rules live in the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k
 
@@ -33,7 +33,7 @@ v1 is done when all six milestones below pass their "done when" checks. Using it
 
 | Screen | What it does |
 | ------ | ------------ |
-| Login | A drawn shelf of doodles, the name, the tagline "All wok, no work.", and Continue with Google |
+| Login | The wok doodle on a drawn shelf line, the name, the tagline "All wok, no work.", and Continue with Google |
 | Setup | Three one-tap questions, skippable |
 | Tonight | Today's idea, Cook this, Not tonight, Cook with, and a planned dinner |
 | Recipe | Ingredients marked have or missing, steps, cost per serving, and Cooked it |
@@ -42,7 +42,7 @@ v1 is done when all six milestones below pass their "done when" checks. Using it
 | Add sheet | Quick-add line, voice, receipt photo, Recent chips, and the rows to confirm |
 | Edit sheet | Amount, unit, storage, date, and optional price, all on the phone |
 | Shopping list | Items with one-tap checks, and Add to list |
-| Settings | People, foods to avoid, cuisines, reminder time and days, and sign out |
+| Settings | A sheet opened with the gear on every tab: people, foods to avoid, cuisines, reminder time and days, and sign out |
 
 Tabs: Tonight, Kitchen, Shopping, and Recipes. Recipes gets its tab from the start so the layout never changes. It fills up as recipes are saved or cooked, and outside recipes join it later.
 

@@ -1,18 +1,9 @@
-import { useRouter } from 'expo-router';
-
 import { EmptyState } from '@/components/EmptyState';
-import { IconButton } from '@/components/IconButton';
 import { Screen } from '@/components/Screen';
 
 export default function TonightRoute() {
-  const router = useRouter();
-
   return (
-    <Screen
-      title="Tonight"
-      trailing={
-        <IconButton symbol="gearshape" label="Settings" onPress={() => router.push('/settings')} />
-      }>
+    <Screen title="Tonight">
       <EmptyState
         doodle="egg"
         headline="Nothing cooking yet"

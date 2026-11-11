@@ -1,22 +1,26 @@
-import type { PropsWithChildren, ReactNode } from 'react';
+import { useRouter } from 'expo-router';
+import type { PropsWithChildren } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { size, space, useColors } from '@/theme/theme';
 
-import { ICON_SIZE } from './IconButton';
+import { ICON_SIZE, IconButton } from './IconButton';
 import { Title } from './Title';
 
 type ScreenProps = PropsWithChildren<{
   /** The serif title at the top: "Tonight", "Kitchen". */
   title: string;
-  /** An optional icon button at the right end of the title row. */
-  trailing?: ReactNode;
 }>;
 
-/** The frame every tab shares: the canvas, the safe area, and a large serif title. */
-export function Screen({ title, trailing, children }: ScreenProps) {
+/**
+ * The frame every tab shares: the canvas, the safe area, a large serif title, and
+ * the gear that opens Settings. The gear sits in the same place on every tab, so
+ * nobody has to remember which tab has it.
+ */
+export function Screen({ title, children }: ScreenProps) {
   const colors = useColors();
+  const router = useRouter();
 
   return (
     // The safe area keeps the content clear of the status bar and the tab bar.
@@ -27,7 +31,13 @@ export function Screen({ title, trailing, children }: ScreenProps) {
         <Title size="largeTitle" style={styles.title}>
           {title}
         </Title>
-        {trailing && <View style={styles.trailing}>{trailing}</View>}
+        <View style={styles.gear}>
+          <IconButton
+            symbol="gearshape"
+            label="Settings"
+            onPress={() => router.push('/settings')}
+          />
+        </View>
       </View>
       {/* A ScrollView, so nothing is cut off at the largest text sizes. */}
       <ScrollView contentContainerStyle={styles.body} alwaysBounceVertical={false}>
@@ -45,14 +55,12 @@ const styles = StyleSheet.create({
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    // Tall enough for a trailing button, so the title sits at the same height on every tab.
-    minHeight: size.tapTarget,
     marginTop: space[2],
   },
   title: {
     flex: 1,
   },
-  trailing: {
+  gear: {
     // An icon button's tap area is wider than its icon. Pulling it into the gutter
     // lines the icon itself up with the edge of the content.
     marginRight: -(size.tapTarget - ICON_SIZE) / 2,

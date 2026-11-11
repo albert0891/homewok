@@ -25,19 +25,21 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - Set screen titles in `large-title`, dish names in `title-1`, and sheet titles and empty-state headlines in `title-2`. These use the serif family (`ui-serif`, Apple's New York) and appear nowhere else.
 - Set everything else in the system sans: `body` for names and steps, `headline` for button labels, `subhead` for meta lines, `footnote` for helper text, `caption` for pills and tab labels.
-- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it.
+- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it. Titles stop at the largest sizes iOS itself gives them: 60px for `large-title`, 58px for `title-1`, and 56px for `title-2`.
 - Line up numbers in amounts and costs with tabular figures.
 
 ## Space and shape
 
-- Work on a 4px grid. Keep a `space-4` (16px) gutter on both sides of every screen.
+- Work on a 4px grid. Keep a `space-4` (16px) gutter on both sides of every screen. The login page is the one exception: it is nearly empty, so it takes a `space-8` (32px) margin.
 - Round list groups and cards with `radius-lg`, the top of sheets with `radius-sheet`, and fields and segmented controls with `radius-md`. Every pressable thing (buttons, chips, pills, steppers) is a capsule: `radius-pill`.
 - Make anything pressable at least `tap-target` (44px) in both directions. List rows are at least `row-height`.
 - No shadows and no glass inside content. Separation comes from `surface` on `canvas`. The system tab bar keeps Apple's own look.
 
 ## Layout
 
+- The login page is laid out like a title page: the wok doodle on a short drawn shelf line, then the name and the tagline, all centered, with the group a little above the middle and Continue with Google at the bottom.
 - Four tabs in the native iOS tab bar: Tonight, Kitchen, Shopping, Recipes.
+- Every tab has the same title row: its `large-title` on the left and the Settings gear on the right.
 - Lists are inset grouped (`ListGroup`): one row per food, grouped by Fridge, Freezer, Pantry, and Staples.
 - Focused tasks open in a `BottomSheet` with one primary action at the bottom.
 - Show what a screen does even when empty: an `EmptyState` with one doodle, one line, and one action.
@@ -45,7 +47,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 ## Iconography and illustration
 
 - Icons are SF Symbols, Apple's built-in set, at the system weights. Native tabs take them through the `sf` prop. No emoji anywhere, and no hand-drawn icons in controls.
-- Illustrations are the ink doodles in the Illustrations asset group: single-ink line drawings with round caps and no fills. Use them only on the login screen, empty screens, the setup flow, and badges.
+- Illustrations are the ink doodles in the Illustrations asset group: single-ink line drawings with round caps and no fills. Use them only on the login screen, empty screens, the setup flow, and badges. Show one doodle at a time with room around it; several in a row crowd a phone screen.
 - In the app, render doodles as SVG components whose stroke is the `ink` token, so they stay visible in dark mode. The files themselves are drawn in the light `ink` value.
 - Doodles are Homewok's own. Do not copy another brand's illustrations.
 - The Continue with Google button follows Google's branding guidelines, not these tokens: the full-color G logo, a white fill with a #747775 outline and #1F1F1F text in light mode, and Google's dark style (#131314 fill, #8E918F outline, #E3E3E3 text) in dark mode. It may be a capsule like every other button.
@@ -58,6 +60,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - Mirror `tokens.json` in one theme file in the app, and read colors by name for the current color scheme. Components never contain hex values.
 - Use `fontFamily: 'ui-serif'` for titles; React Native supports the iOS generic families. Use the default system font for everything else.
+- React Native grows all text by one factor, so cap titles with `maxFontSizeMultiplier`: 60/34 for `large-title`, 58/28 for `title-1`, and 56/22 for `title-2`.
 - Build lists on `FlatList` or `SectionList`, sheets on the native sheet presentation, and tabs on Expo Router's native tabs.
 
 ## Components
