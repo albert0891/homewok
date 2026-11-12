@@ -6,5 +6,6 @@ Ink doodles of food, drawn for Homewok. Use them only on the login screen, empty
 - `scallion.svg` — a bunch of scallions. Empty Kitchen screen.
 - `egg.svg` — a whole egg and a fried egg. Empty Tonight screen.
 - `rice-bowl.svg` — a bowl of rice with chopsticks. Empty Recipes screen and the setup flow.
+- `grocery-bag.svg` — a shopping bag with two leaves of greens sticking out. Empty Shopping screen.
 
-All four are single-ink line drawings: stroke `#2A1E16` (the light `ink` value), 2.4 wide on a 120 × 80 box, round caps and joins, no fills. An `<img>` cannot recolor them, so in the app render them as SVG components whose stroke comes from the `ink` token, which keeps them visible in dark mode.
+All five are single-ink line drawings: stroke `#2A1E16` (the light `ink` value), 2.4 wide on a 120 × 80 box, round caps and joins, no fills. An `<img>` cannot recolor them, so in the app render them as SVG components whose stroke comes from the `ink` token, which keeps them visible in dark mode.

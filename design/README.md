@@ -48,9 +48,17 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - Icons are SF Symbols, Apple's built-in set, at the system weights. Native tabs take them through the `sf` prop. No emoji anywhere, and no hand-drawn icons in controls.
 - Illustrations are the ink doodles in the Illustrations asset group: single-ink line drawings with round caps and no fills. Use them only on the login screen, empty screens, the setup flow, and badges. Show one doodle at a time with room around it; several in a row crowd a phone screen.
+- Every empty screen has a doodle of its own, so no tab looks unfinished beside the others: eggs on Tonight, scallions on Kitchen, a grocery bag on Shopping, and a rice bowl on Recipes.
 - In the app, render doodles as SVG components whose stroke is the `ink` token, so they stay visible in dark mode. The files themselves are drawn in the light `ink` value.
 - Doodles are Homewok's own. Do not copy another brand's illustrations.
 - The Continue with Google button follows Google's branding guidelines, not these tokens: the full-color G logo, a white fill with a #747775 outline and #1F1F1F text in light mode, and Google's dark style (#131314 fill, #8E918F outline, #E3E3E3 text) in dark mode. It may be a capsule like every other button.
+
+## App icon
+
+- The app icon is a roof over a wok on a linen tile: the name, drawn as a picture. The roof is `ink`, the wok is `accent`, and the tile is `canvas`, each with its dark value in dark mode. The source is `icon/AppIcon.icon`.
+- Keep it flat, like ink on paper: no glass on the two layers and no shadow. iOS still rounds the tile and lights its edge.
+- On clear and tinted Home Screens the wok is white and the roof is light gray, so the wok stays the brightest part.
+- The icon stays outside the app. iOS already shows it on the Home Screen, in notifications, in search, and in the app switcher. Inside, no screen repeats it: the launch screen is plain `canvas`, and the login page keeps its steaming wok doodle.
 
 ## Motion
 

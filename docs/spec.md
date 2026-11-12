@@ -81,11 +81,15 @@ Tables: `households`, `household_members`, `ingredients`, `batches`, `events`, `
 
 ## Design files
 
-`design/` holds the design system's sources: `tokens.json`, the brand book `README.md`, one guideline file per component, and the doodles. The app's theme file is built from `design/tokens.json`. After a change in `design/`, the design system artifact is republished so its previews match.
+`design/` holds the design system's sources: `tokens.json`, the brand book `README.md`, one guideline file per component, the doodles, and the app icon. The app's theme file is built from `design/tokens.json`. After a change in `design/`, the design system artifact is republished so its previews match.
+
+## App icon
+
+The first plan had no step for the app icon. It was designed and built on 2026-11-11, between milestones 1 and 2: a roof over a wok, kept in `design/icon/`. The reasons are in `docs/decisions.md`.
 
 ## Doodles (v1)
 
-The four doodles in `design/doodles/` cover the login shelf and two empty screens. v1 needs about eight more in the same style, drawn by Claude as SVG when each screen is built: the empty shopping list, the empty Recipes screen, the three setup questions, an error state, a finished dish for Cooked it, and the receipt review.
+The five doodles in `design/doodles/` cover the login shelf and the empty state of all four tabs. v1 needs about six more in the same style, drawn by Claude as SVG when each screen is built: the three setup questions, an error state, a finished dish for Cooked it, and the receipt review. A screen with an empty state gets its doodle in the same step, so no screen is left without one.
 
 ## Open questions
 

@@ -12,7 +12,7 @@ Talk to the user in Traditional Chinese. Everything in the project (code, commen
 | `CLAUDE.md`         | How the AI must work.                                                                |
 | `docs/spec.md`      | The v1 scope: what is in and out, the screens, the milestones, and when each is done. |
 | `docs/decisions.md` | Product and technical decisions, and what is still open. Update it when one changes. |
-| `design/`           | Design system sources: `tokens.json`, the brand book `README.md`, component guidelines, and doodles. Read before building UI. |
+| `design/`           | Design system sources: `tokens.json`, the brand book `README.md`, component guidelines, doodles, and the app icon. Read before building UI. |
 | Homewok design system | The viewer for `design/` with live previews: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k. Republish it after changing `design/`. |
 | `docs/dev-log.md`   | Dated log of what was done and why. Update it after each completed task, unprompted. |
 | `docs/setup.md`     | One-time setup of Xcode, Supabase, Google sign-in, and `.env.local`, and how to build and run the app. |

@@ -62,7 +62,7 @@ npm run ios
 
 The first build takes ten minutes or more. It compiles a development build, installs it on the Simulator, and starts the dev server. After that, `npm start` is enough for changes to TypeScript files.
 
-Rebuild after anything native changes: a new native library, `app.config.ts`, or `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`.
+Rebuild after anything native changes: a new native library, `app.config.ts`, the app icon in `design/icon/`, or `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`.
 
 ```bash
 npx expo prebuild --platform ios --clean

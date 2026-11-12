@@ -1,5 +1,12 @@
 # Dev Log
 
+## 2026-11-12
+
+- Republished the design system with the app icon: a new section in the brand book and an AppIcon group that shows the icon in its default, dark, clear, and tinted modes.
+- The user kept the steaming wok on the login page, so the app icon stays outside the app. `docs/decisions.md` and `design/README.md` now say so, and the question is off the Still Discussing list.
+- **Shopping doodle.** The user saw that Shopping was the one tab without a doodle, and asked for one there or for none on any tab. Its doodle had been left for milestone 2, which made the four tabs uneven. Drew `grocery-bag.svg`: a shopping bag with two leaves of greens sticking out. Three drafts were dropped first. Scallions in the bag read as chopsticks in a takeout box. A basket read as a third bowl beside the wok and the rice bowl. A paper bag needed a folded side drawn in perspective, which none of the other doodles use. `EmptyState` now requires a doodle, so a new screen cannot leave it out.
+- Checked on the iPhone 18 Pro Simulator: all four tabs in light mode, where the headline sits at the same height on each, and Shopping in dark mode. Not checked on the 17e or the 18 Pro Max; Shopping uses the same `EmptyState` as the other three tabs. Republished the design system with the new doodle and the rule that every empty screen has one. `npm run check` passes with 31 tests. Milestone 2 (Kitchen by hand) is next.
+
 ## 2026-11-11
 
 - **Milestone 1 (login) works on the iOS Simulator.** The user signed in with Google on iPhone 18 Pro. The app stayed signed in after it was quit and reopened three times, the four tabs and the Settings sheet open, and Sign out returns to the login page and stays signed out after a restart. Not tried: signing in a second time after signing out, which needs the user's Google account.
@@ -12,6 +19,10 @@
 - The Settings gear is now on every tab. It was only on Tonight, and the user looked for it on the other tabs. `Screen` draws it, so a new tab cannot leave it out. Checked on iPhone 18 Pro: the gear on all four tabs, Settings opened from Recipes, and Tonight and Shopping in dark mode at the largest text size. Not rechecked on the 17e and the 18 Pro Max, where the title row was last checked with the gear on Tonight.
 - The user signed in a second time after the earlier sign-out, and the app was still signed in after another restart, so the one open check from above is closed. **Milestone 1 is done.** `npm run check` passes with 26 tests.
 - Committed the gear and the login page choice, and tagged that commit `m1-login`, the restore point for the end of milestone 1. The user confirmed the GitHub repo stays private. Milestone 2 (Kitchen by hand) is next.
+- **App icon.** The plan had no step for it: `docs/spec.md` did not mention it, and `docs/decisions.md` only listed Expo's placeholder under Still Discussing. Read Apple's guidelines for app icons and the advice of Michael Flarup and Sagi Haviv on icons and logos, and looked at 69 food app icons from six App Store searches. Drew three directions (a steaming wok, a roof over a wok, and a lid shaped like the roof part of the Chinese character for home) and rendered each with `ictool`, the renderer inside Xcode's Icon Composer. The user chose the roof over a wok on a linen tile, with an ink roof and a persimmon wok.
+- The icon is an Icon Composer file in `design/icon/`, and `app.config.ts` points at it. Expo's placeholder `assets/icon.png` is gone. Two things only showed up in real renders. Left to itself, iOS kept the ink color on the dark tile, where it disappears, so `icon.json` sets each layer's color for light, dark, and tinted modes. And Xcode filled the roof's pen lines into a solid triangle in the icon it makes for iOS 18 and earlier, so both drawings are closed outlines now. A new test keeps the icon's colors equal to the tokens.
+- Checked on the iPhone 18 Pro Simulator (iOS 27.2): the Home Screen in the Default, Dark, Clear, and Tinted icon styles, and the app still opens signed in after the reinstall. Not checked on the 17e or the 18 Pro Max, because iOS draws the icon the same at every screen size, and not on a real phone. `npm run check` passes with 30 tests.
+- Inside the app: Apple's guidelines advise against repeating a logo on working screens and against a logo on the launch screen, so nothing was added, and the launch screen stays a plain canvas color. Took three login pages on the Simulator for the user to choose from: the steaming wok as it is, the same doodle with a roof, and the icon itself. The login page is unchanged until they choose.
 
 ## 2026-11-10
 

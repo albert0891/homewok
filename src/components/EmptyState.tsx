@@ -7,8 +7,8 @@ import type { DoodleName } from './doodles';
 import { Title } from './Title';
 
 type EmptyStateProps = {
-  /** Left out only until the screen's own doodle has been drawn. */
-  doodle?: DoodleName;
+  /** Every empty screen has one, so no screen looks unfinished beside the others. */
+  doodle: DoodleName;
   headline: string;
   /** One plain sentence, two lines at most. */
   sentence: string;
@@ -20,11 +20,9 @@ export function EmptyState({ doodle, headline, sentence }: EmptyStateProps) {
 
   return (
     <View style={styles.container}>
-      {doodle && (
-        <View style={styles.doodle}>
-          <Doodle name={doodle} />
-        </View>
-      )}
+      <View style={styles.doodle}>
+        <Doodle name={doodle} />
+      </View>
       <Title size="title2" style={styles.text}>
         {headline}
       </Title>

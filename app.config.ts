@@ -29,12 +29,14 @@ const config: ExpoConfig = {
   scheme: 'homewok',
   platforms: ['ios'],
   orientation: 'portrait',
-  icon: './assets/icon.png',
   // Follow the phone's light or dark setting.
   userInterfaceStyle: 'automatic',
   ios: {
     bundleIdentifier: 'com.albert.homewok',
     supportsTablet: false,
+    // The app icon is an Icon Composer file: two drawn layers, plus their colors for
+    // light, dark, and tinted Home Screens. See design/icon/README.md.
+    icon: './design/icon/AppIcon.icon',
   },
   plugins: [
     'expo-router',
