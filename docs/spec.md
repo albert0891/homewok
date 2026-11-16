@@ -1,6 +1,6 @@
 # Homewok v1 Spec
 
-Last updated: 2026-11-11. Status: approved by the user on 2026-11-10.
+Last updated: 2026-11-12. Status: approved by the user on 2026-11-10.
 
 This is the scope of the first version: what we build, in what order, and how we know each step is done. The reasons and the detailed rules live in `docs/decisions.md`. The visual rules live in the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k
 
@@ -93,5 +93,8 @@ The five doodles in `design/doodles/` cover the login shelf and the empty state 
 
 ## Open questions
 
-- Offline: which library keeps lists readable offline and queues edits. Decide during milestone 2.
 - When to join the Apple Developer Program: at milestone 5 at the latest.
+
+Decided since the spec was approved:
+
+- Offline (2026-11-12): TanStack Query keeps a copy of the lists on the phone and queues edits. The reasons are in `docs/decisions.md`.

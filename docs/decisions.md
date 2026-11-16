@@ -1,6 +1,6 @@
 # Homewok Decisions
 
-Last updated: 2026-11-11. This records what has been decided and what is still open. The v1 scope is in `docs/spec.md`, and building started with milestone 1.
+Last updated: 2026-11-12. This records what has been decided and what is still open. The v1 scope is in `docs/spec.md`, and building started with milestone 1.
 
 ## Build Order
 
@@ -35,6 +35,14 @@ Last updated: 2026-11-11. This records what has been decided and what is still o
 | Text size | All text grows with the iOS text size setting. Serif titles stop at the sizes iOS itself uses | React Native grows every text by one factor, which made a 34px title three times larger. The `Title` component caps large-title at 60/34, title-1 at 58/28, and title-2 at 56/22 of the default size, from Apple's Dynamic Type table. Chosen 2026-11-11 |
 | Demo mode | None | If the app ever goes public, use Supabase anonymous sign-in instead of a shared demo account |
 | Sample data | A "Load sample kitchen" button that only exists in development builds (`__DEV__`) | Dates are relative to today, so there is always something expiring. Uses the hosted Supabase project, so no Docker is needed |
+| Offline | TanStack Query v5 keeps a copy of the kitchen and shopping lists on the phone, and edits wait in a queue until the phone is online | Chosen 2026-11-12. It is free, needs no account, and the data stays in Supabase. Passed over: PowerSync (a separate service, $49 a month beyond its free plan, and the access rules must be written a second time there), Legend-State v3 (still a beta), TanStack DB (1.0 is a release candidate), and a hand-written SQLite copy (a small sync engine to maintain). It is a cache and a queue, not sync between devices: with family sharing, two phones changing the same row means the last one wins, so look again then |
+| Saving changes | Every action is one call to the database function `apply_changes`: the rows to save and the ids to remove, in one transaction | Checking off a shopping item saves a purchase and removes the item, and both happen or neither does. Sending a call twice ends in the same state, so a queued edit can be sent again safely. Undo sends the reverse changes. Chosen 2026-11-12 |
+| Row ids | Made on the phone with `expo-crypto` | A food added offline can be edited before it has reached the database. Ids made by the database would need temporary ids that are swapped later |
+| Households | A database trigger on `auth.users` gives each new account a household, a membership, and ten starter staples | The app never sees someone who is signed in but has no household. One household per person for now: `household_members.user_id` is the primary key. The staples are salt, sugar, cooking oil, soy sauce, rice, cornstarch, sesame oil, rice vinegar, white pepper, and oyster sauce |
+| Row-level security | Every table compares `household_id` with the signed-in person's household. A request that is not signed in has no privileges at all | Such a request gets an error and never an empty list, which could otherwise replace the copy on the phone with an empty kitchen. `supabase/tests/two_accounts.sql` proves it with two throwaway accounts and leaves nothing behind |
+| Migrations | SQL files in `supabase/migrations/`, applied to the hosted project through the Supabase connector after the user has read them | No Supabase CLI, no Docker, and no database password in a chat. Chosen 2026-11-12 |
+| Outside data | Checked with `zod` before use: rows from Supabase and the copy saved on the phone | A row in an unexpected shape is a clear failure and never a wrong amount. A test keeps the checks equal to the columns in the migration |
+| Date picker | `@react-native-community/datetimepicker`, the native iOS calendar | Expo's `@expo/ui` has a compatible component, so changing later is one import |
 | Code hosting | A private GitHub repo. The user publishes and pushes from VS Code | Chosen 2026-11-11, replacing local git only. Every verified task becomes a commit, so any step can be restored. Claude still gets no GitHub connector or GitHub CLI, and commits never carry an AI co-author line, so Claude does not show up as a contributor |
 | Design | Design system first, built on Apple's iOS defaults (Human Interface Guidelines) plus the Homewok personality | Direction A, Persimmon kitchen (chosen 2026-11-09). Linen background (#F4EDE3), serif titles (`ui-serif`) with system body text, warm charcoal dark mode. Components: capsule buttons, inset grouped lists, use-soon pills, the native iOS tab bar, and SF Symbols. Published as the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k |
 | Google button | Follows Google's branding guidelines | Full-color G logo, white fill with a #747775 outline in light mode, Google's dark style in dark mode. The one control that does not use Homewok tokens |
@@ -64,10 +72,25 @@ Last updated: 2026-11-11. This records what has been decided and what is still o
 
 There is no global food catalog, no units table, and no separate condiments table.
 
+### What milestone 2 built
+
+The tables are in `supabase/migrations/`. They follow the draft above, with these differences (2026-11-12):
+
+- **`households` and `household_members`** are new tables behind `household_id`.
+- **A purchase keeps its unit.** `batches.unit` is the unit the amount was typed in (`lb`, `oz`, `fl oz`, `cup`, `gal`, or `count`), so 8 oz is shown as 8 oz and not as ½ lb. The amount itself is still stored in grams, ml, or pieces.
+- **A food remembers its usual purchase:** `usual_amount`, `usual_unit`, `usual_label`, and `usual_storage` on `ingredients`, copied from the last purchase the person entered. It is what "the last amount bought" needs after a food is used up, and milestone 3 can put the AI's guess at a typical pack size in the same place.
+- **A purchase with nothing left is removed,** and so is a shopping item that was checked off. The two tables only hold what is in the kitchen and what is still to buy.
+- **`aliases` and `category` are not there yet.** They arrive with the milestones that fill them: 6 (receipts) and 3 (the AI's first guess).
+- **`events` waits for milestone 4,** when Cooked it first needs the history. Nothing in milestones 2 and 3 reads it, and writing it now would make every action two writes that must succeed together. The cost: history starts at milestone 4.
+- **`recipes` and `settings`** wait for milestones 4 and 5.
+
 ### Amounts
 
 - Code only knows three amount kinds: weight, volume, and count. A label such as "stalk" is display text, and no logic depends on it.
 - Deduction rule: same kind and same label means subtract. Anything else means ask None, Some, or All. "Some" takes half of what is left and marks the amount as an estimate.
+- A deduction takes from the purchase with the soonest date first. Amounts that cannot be added, such as 1 bunch and 3 stalks, are shown side by side and halved separately by "Some" (2026-11-12).
+- Each unit is one line of data in `src/data/units.ts`: its size in the base unit, its word, its stepper step, and its one-tap amounts. A total across purchases uses the largest of their units.
+- Using a food up keeps the food, with its usual purchase, and offers Add to list. Removing a food's last purchase removes the food too, so a food added by mistake leaves nothing behind (2026-11-12).
 
 ## Where Logic Lives
 
@@ -142,10 +165,11 @@ There is no global food catalog, no units table, and no separate condiments tabl
 - The quick-add line is read only after the user taps the arrow, never while typing, and takes about 1 to 3 seconds. The same box can add more rows before confirming.
 - The edit sheet runs entirely on the phone with no AI call, so it opens and saves instantly. The screen updates first and the save happens in the background, and a failed save reverts and says so.
 - Dates: estimated by default, typed in the sentence ("chicken thighs expire Friday"), or set in the edit sheet with chips (Tomorrow, In 3 days, In a week) or a calendar. Package label scanning comes later.
+- Until milestone 3 guesses a shelf life for each food, the estimate depends only on the storage place: 7 days in the fridge, 90 in the freezer, and 180 in the pantry, kept as data in `src/data/storages.ts`. Moving a purchase to another place estimates the date again (2026-11-12).
 - Voice (proposed): record with `expo-audio` and send the audio to Gemini with the item schema in one call. Gemini counts 32 tokens per second of audio, so a 10-second list costs a small fraction of a cent. No on-device Whisper: splitting speech into foods needs the LLM, which is online anyway. A free on-device option is Apple's SpeechAnalyzer (iOS 26) through a community module, if testing shows it is good enough.
 - Amounts are never required. A food added without one takes the last amount bought, or the typical pack size the AI guessed in the same call, shown with "~". Receipts and shopping list items carry their own amounts.
 - The edit sheet shows only the units for the food's kind, from one constant list in code: weight shows lb and oz, volume shows fl oz, cup, and gal, counted foods show their own label with no unit control, and staples show Have, Low, and Out.
-- Offline: the kitchen and shopping lists stay readable without a connection, and check-offs and edits wait in a queue until the phone is online. Typed or spoken lists are kept and read once online. The exact approach is still to be chosen.
+- Offline: the kitchen and shopping lists stay readable without a connection, and check-offs and edits wait in a queue until the phone is online. Typed or spoken lists are kept and read once online. The approach was chosen on 2026-11-12: see Offline and Saving changes under Technical.
 
 ### Outside Recipes
 
