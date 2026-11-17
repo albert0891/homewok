@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          # The same Node version as on the Mac.
+          # The same major Node version as on the Mac. GitHub picks its newest 24.x.
           node-version: 24
           # Keep downloaded packages between runs, until package-lock.json changes.
           cache: npm
