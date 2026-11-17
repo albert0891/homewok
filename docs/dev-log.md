@@ -23,7 +23,9 @@
   - titles only for the later milestones (`HW-29` to `HW-52`), including the Gemini spending-limit task under M3 (`HW-33`).
 - The numbers start at 4 because Jira never reuses a number, and the three deleted samples took 1 to 3. Jira Cloud cannot reset the counter; only a new space would start again at 1.
 - The user found the backlog hard to follow, so Claude ordered it so the top card is the next one: CI (`HW-21`), the spot in the migration (`HW-23`), reading and applying the migration (`HW-24`), a new data-layer task (`HW-53`, the offline copy and edit queue that every screen needs), the sample kitchen button (`HW-25`), then the screens. Checked in the user's Chrome: the backlog page shows a Board list on top and the Backlog list below. `CLAUDE.md` rule 7 and `docs/decisions.md` now say how a card reaches the board, what "do the next card" means, that out-of-scope finds become backlog cards, and that each request is one card and one pull request.
-- Next: the user drags the first cards onto the board, starting with `HW-21`. The rest of milestone 2 then goes through pull requests: CI first, then the spot in the design system and the migration, then the user reads the migration before it is applied.
+- PR #1 (`HW-54`), the docs for all of the above, was merged as `f567fb8`: the first pull request in this repo.
+- The user asked how to manage the md files and Jira together, and how to work now that Jira splits the work. The answer is now `CLAUDE.md` rule 8 and two bullets in `docs/decisions.md`: the user works only in Jira and pull requests, and Claude keeps the docs and the cards in sync in the same pull request; work goes one card per fresh session named after the card, instead of one long session per milestone; and no automation moves cards.
+- Next: the user drags `HW-21` (CI) onto the board and starts a session named "HW-21 Add CI".
 
 ## 2026-11-12
 
