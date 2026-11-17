@@ -1,0 +1,40 @@
+# CI: a clean Linux machine from GitHub runs `npm run check`, the same lint, type
+# check, and tests as on the Mac. The pull request then shows a green check, or a
+# red cross when one of them fails. See CI in docs/decisions.md.
+name: CI
+
+on:
+  # When a pull request opens, and on every push to its branch.
+  pull_request:
+  # On every merge into main, so the last merged commit has a result too.
+  push:
+    branches: [main]
+
+# The checks only read the code. They need no secrets.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: npm run check
+    runs-on: ubuntu-latest
+    # A run takes a minute or two. Stop a stuck one long before GitHub's
+    # six-hour default uses up the month's free minutes.
+    timeout-minutes: 10
+    env:
+      # The Mac's time zone, so the date tests cross the same clock changes.
+      TZ: America/New_York
+      # Expo's command-line tool sends usage data unless this is set.
+      EXPO_NO_TELEMETRY: 1
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          # The same major Node version as on the Mac. GitHub picks its newest 24.x.
+          node-version: 24
+          # Keep downloaded packages between runs, until package-lock.json changes.
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint, type check, and test
+        run: npm run check
