@@ -1,6 +1,6 @@
 # Homewok v1 Spec
 
-Last updated: 2026-11-12. Status: approved by the user on 2026-11-10.
+Last updated: 2026-11-16. Status: approved by the user on 2026-11-10. The changes listed at the end were approved on the days shown.
 
 This is the scope of the first version: what we build, in what order, and how we know each step is done. The reasons and the detailed rules live in `docs/decisions.md`. The visual rules live in the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k
 
@@ -8,13 +8,13 @@ This is the scope of the first version: what we build, in what order, and how we
 
 A personal iOS app for one household that keeps track of the kitchen and suggests tonight's dinner from it.
 
-v1 is done when all six milestones below pass their "done when" checks. Using it at home afterwards shows what to fix next; it is not a gate for finishing.
+v1 is done when the six milestones and the deploy step below are signed off. Using it at home afterwards shows what to fix next; it is not a gate for finishing.
 
 ## In v1
 
 - Sign in with Google.
-- Kitchen: foods grouped by storage, batches, use-soon pills, staples, the edit sheet, and Used some.
-- Adding food: the quick-add line, Recent chips, the manual edit sheet, receipt photos, and voice.
+- Kitchen: foods grouped by storage, batches, use-soon pills, staples, the edit sheet with an optional spot, and Used some.
+- Adding food: the quick-add line, Recent chips, the manual edit sheet, photos of a receipt or of the groceries on a table, and voice.
 - Shopping list: one tap moves a food to the Kitchen, and Add to list works the other way.
 - Tonight: 3 ideas from current stock, Not tonight, Cook with, Cooked it with leftovers, a planned dinner, and a rough cost per serving.
 - Recipes: its own tab with the recipes you saved or cooked.
@@ -39,8 +39,8 @@ v1 is done when all six milestones below pass their "done when" checks. Using it
 | Recipe | Ingredients marked have or missing, steps, cost per serving, and Cooked it |
 | Recipes | Its own tab: the recipes you saved or cooked, with an empty state until the first one |
 | Kitchen | Inset grouped list by Fridge, Freezer, Pantry, and Staples, with the add button |
-| Add sheet | Quick-add line, voice, receipt photo, Recent chips, and the rows to confirm |
-| Edit sheet | Amount, unit, storage, date, and optional price, all on the phone |
+| Add sheet | Quick-add line, voice, a photo of a receipt or of the groceries, Recent chips, and the rows to confirm |
+| Edit sheet | Amount, unit, storage, optional spot, date, and optional price, all on the phone |
 | Shopping list | Items with one-tap checks, and Add to list |
 | Settings | A sheet opened with the gear on every tab: people, foods to avoid, cuisines, reminder time and days, and sign out |
 
@@ -53,26 +53,38 @@ Each milestone ends with something usable on the iOS Simulator or the user's pho
 | # | Milestone | Main work | Rough time |
 | - | --------- | --------- | ---------- |
 | 1 | Login | Expo project, Supabase project, Google sign-in, stay signed in, sign out, empty tabs | 1 to 2 weeks |
-| 2 | Kitchen by hand | Tables and row-level security, Kitchen list, edit sheet, Used some, staples, shopping list, sample data button | 2 to 3 weeks |
-| 3 | Quick add | Edge Function with Gemini that turns a typed list into rows, Recent chips, rate limits | 1 to 2 weeks |
+| 2 | Kitchen by hand | Tables and row-level security, Kitchen list, edit sheet with an optional spot, Used some, staples, shopping list, sample data button, CI | 2 to 3 weeks |
+| 3 | Quick add | The AI server in Python and FastAPI, run on the Mac, where Gemini turns a typed list into rows. Recent chips, rate limits | 2 to 3 weeks |
 | 4 | Tonight | Ideas from stock, recipe page, Cooked it with leftovers, Not tonight, Cook with, planned dinner, cost per serving | 3 weeks |
+| – | Deploy | The AI server as a Docker image on AWS, CI/CD that deploys it when the checks pass, and quick add timed again from the phone | 2 to 3 weeks |
 | 5 | Setup and notification | Setup flow, settings, the daily notification and its back-off rules | 1 to 2 weeks |
-| 6 | Receipts and voice | Receipt photo to rows with a review screen, aliases, voice through Gemini audio | 2 weeks |
+| 6 | Photos and voice | Photos of a receipt or of the groceries on a table to rows, with one review screen, aliases, voice through Gemini audio | 3 weeks |
+
+On 2026-11-16 milestone 3 grew by a week because it sets up the Python server and includes learning FastAPI, and milestone 6 grew by a week for the table photos. The deploy step has no number, so milestones 5 and 6 keep theirs. It comes before milestone 5 because the daily notification needs a server that is always on.
 
 ### Done when
 
+Each line is a summary. Before a milestone's code starts, Claude turns its line into Jira stories, each with acceptance checks: short Given / When / Then steps that the user can try on the Simulator or the phone. The user edits and approves them, and only the user moves work to Done, after trying it. The rules are in `docs/decisions.md` under Milestone Sign-off. Milestone 1 was finished before this way of signing off existed.
+
 1. **Login:** you can sign in with Google on the Simulator, close and reopen the app and still be signed in, and sign out. Lint, type check, and tests pass.
 2. **Kitchen by hand:** you can add, edit, use, and delete foods without any AI, a second account cannot see them, checking a shopping item moves it to the Kitchen with Undo, and the amount and date rules have tests.
-3. **Quick add:** "ground pork 1 lb, 10 eggs" becomes two rows in about 3 seconds, unreadable input fails with a clear message, and the text is kept when it fails.
+3. **Quick add:** "ground pork 1 lb, 10 eggs" becomes two rows in about 3 seconds with the AI server on the Mac, unreadable input fails with a clear message, and the text is kept when it fails. The server refuses a request without a valid sign-in, and its tests pass.
 4. **Tonight:** an idea uses at least one use-soon food when there is one, never includes a food to avoid (checked by code, with tests), and Cooked it updates the Kitchen.
+
+- **Deploy:** quick add works on the phone away from the home Wi-Fi, a push that fails the checks deploys nothing, the Gemini key exists only on AWS, and quick add is timed again from the phone, including the first call after the server has been idle.
+
 5. **Setup and notification:** one message arrives at the chosen time with the content in the agreed order, and none arrives after Cooked it or Not cooking tonight. This step needs the Apple Developer Program.
-6. **Receipts and voice:** a typical receipt needs only a few fixes, nothing is saved before the review screen, and model choices are compared on 10 real receipts first, with the user's go-ahead for the API calls.
+6. **Photos and voice:** a typical receipt needs only a few fixes, a photo of a table of groceries finds most of what can be seen, nothing is saved before the review screen, and model choices are compared on 10 real receipts and 10 real table photos first, with the user's go-ahead for the API calls.
 
-## Every milestone
+## Every milestone (Definition of Done)
 
+What every milestone needs on top of its own acceptance checks:
+
+- Everything in the milestone's Jira epic is Done, moved there by the user after trying it.
+- CI passes on the last merged commit (from milestone 2 on).
 - Check on the Simulator at the smallest and largest iPhone sizes, in light and dark mode, with large text.
-- Run lint, type check, and tests for pure logic.
-- Update `docs/dev-log.md`, and list what to push and what to leave out.
+- Run lint, type check, and tests for pure logic, and the AI server's tests once it exists.
+- Update `docs/dev-log.md`, and say in each pull request what changed, how to try it, and what was not verified.
 - Explain the new code in a walkthrough.
 
 ## Data (v1)
@@ -94,7 +106,14 @@ The five doodles in `design/doodles/` cover the login shelf and the empty state 
 ## Open questions
 
 - When to join the Apple Developer Program: at milestone 5 at the latest.
+- The Gemini spending limit: confirmed before milestone 3 (see Still Discussing in `docs/decisions.md`).
+- Which AWS service runs the AI server: chosen at the deploy step.
 
 Decided since the spec was approved:
 
 - Offline (2026-11-12): TanStack Query keeps a copy of the lists on the phone and queues edits. The reasons are in `docs/decisions.md`.
+- AI server (2026-11-16): every AI call goes through a Python FastAPI server instead of Edge Functions, and the app keeps reading and writing Supabase directly. It runs on the Mac until the new deploy step moves it to AWS. Gemini stays.
+- Sign-off (2026-11-16): acceptance checks are agreed before the code and kept in Jira, only the user moves work to Done, and CI runs the checks on every pull request.
+- Pull requests (2026-11-16): Claude commits on a branch and opens a pull request, and the user reviews and merges it.
+- Spot (2026-11-16): an optional label for where in a storage a purchase sits, such as "Drawer 2".
+- Table photos (2026-11-16): a photo of the groceries on a table joins receipts in milestone 6, now called Photos and voice.
