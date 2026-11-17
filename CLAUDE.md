@@ -46,8 +46,8 @@ This is a personal project for now. Focus on feasible, great features. Do not br
 9. **Deep modules:** keep a feature's state, data calls, and UI together. Route files only handle layout and composition.
 10. **Before pushing:** run lint, type check, and tests on the exact commit, and keep the git index consistent with the working tree. `npm run check` runs all three and stops at the first failure:
     - `npm run lint` runs ESLint through `expo lint`.
-    - `npm run typecheck` runs `tsc --noEmit`. Route names are only checked after the dev server or `npx expo customize tsconfig.json` has generated the route types.
+    - `npm run typecheck` generates the route types with `expo customize tsconfig.json`, then runs `tsc --noEmit`, so route names such as `/settings` are checked on a fresh clone too.
     - `npm test` runs Jest once.
     - Once `server/` exists, its pytest tests must pass too.
-    - Once CI exists (milestone 2), GitHub runs the same checks on every pull request. Check them with `gh pr checks`, and fix a failure before asking the user to review.
+    - GitHub Actions runs `npm run check` on every pull request and every merge into `main` (`.github/workflows/check.yml`). Check the result with `gh pr checks`, and fix a failure before asking the user to review.
 11. **One rule, one language:** kitchen rules (amounts, units, dates, use-soon) are TypeScript in the app, and checks on AI output are Python in the AI server. Never write a rule in both: the app sends the server what it has already worked out.
