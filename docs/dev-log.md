@@ -1,5 +1,15 @@
 # Dev Log
 
+## 2026-11-17
+
+- PR #3 (`HW-21`) was merged as `85dfb9f`, and CI passed on `main` for the first time, in 66 seconds.
+- **The spot in the migration (`HW-23`, PR #4).** The migration, still not applied, now has `batches.spot` and `ingredients.usual_spot`. Both are optional and hold 1 to 30 characters, enough for "Basement chest freezer". `apply_changes` saves both, and the row checks in `src/data/rows.ts` refuse an empty spot or a longer one, so the app must send no spot as `null`, never as an empty string. The change went into the migration file itself, since nothing has applied it yet.
+- Tests first: six tests in `src/data/rows.test.ts` failed, the four new ones among them, because zod dropped the `spot` it did not know. Once the row checks had it, the test that compares them with the migration failed on `spot` and `usual_spot` until the migration had them too. Five stock and shopping tests that spell out whole rows got the two new fields. `npm run check` passes with 190 tests.
+- Nothing writes a spot yet. New purchases get `spot: null`, `editBatch` keeps a purchase's spot as it was, and a food's `usual_spot` stays empty until the edit sheet asks for a spot in `HW-14`. Two questions for `HW-14`: whether a checked-off shopping item lands in the food's usual spot, the way it lands in its usual storage, and whether moving a purchase to another storage clears its spot.
+- Not checked: the SQL has not run anywhere, because this Mac has no Postgres. `HW-24` applies it and runs `supabase/tests/two_accounts.sql`, whose rows have no spot, which the migration allows.
+- The migration test compares the row checks with only one of the four column lists that `apply_changes` has for each table, so a column left out of the insert, select, or update list would pass. That is `HW-57` in the backlog, at low priority.
+- Next: the user reviews PR #4. `HW-24` (read and apply the migration) is next in the backlog.
+
 ## 2026-11-16
 
 - The user committed and pushed the milestone 2 groundwork as `618b8a1`: the kitchen and shopping rules, their tests, and the migration, which is still not applied.

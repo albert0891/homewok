@@ -15,6 +15,8 @@ import { UNITS } from './units';
 
 const storageId = z.enum(STORAGES.map((storage) => storage.id));
 const unitId = z.enum(UNITS.map((unit) => unit.id));
+/** Where in its storage a purchase sits, such as "Drawer 2". 1 to 30 characters, as in the migration. */
+const spotText = z.string().min(1).max(30);
 
 /** A food the household knows, whether or not any is in the kitchen now. */
 export const ingredientSchema = z.object({
@@ -29,6 +31,7 @@ export const ingredientSchema = z.object({
   usual_unit: unitId.nullable(),
   usual_label: z.string().nullable(),
   usual_storage: storageId.nullable(),
+  usual_spot: spotText.nullable(),
 });
 
 /** One purchase that still has something left. */
@@ -44,6 +47,8 @@ export const batchSchema = z.object({
   /** True when the amount is a guess, shown with "~". */
   is_estimate: z.boolean(),
   storage: storageId,
+  /** Optional display text. Nothing depends on it. */
+  spot: spotText.nullable(),
   /** A calendar day, such as '2026-11-19'. */
   use_by: z.iso.date(),
   /** 'estimated' is the app's own guess, shown as "about". */

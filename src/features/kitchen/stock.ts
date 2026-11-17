@@ -49,6 +49,7 @@ export function newIngredient(id: string, name: string, tracking: Ingredient['tr
     usual_unit: null,
     usual_label: null,
     usual_storage: null,
+    usual_spot: null,
   };
 }
 
@@ -104,6 +105,8 @@ export function addPurchase(
     label,
     is_estimate: false,
     storage: purchase.storage,
+    // The add sheet does not ask for a spot yet.
+    spot: null,
     use_by: purchase.use_by,
     date_source: purchase.date_source,
     price_cents: purchase.price_cents,

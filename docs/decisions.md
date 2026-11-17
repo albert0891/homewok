@@ -102,7 +102,7 @@ The tables are in `supabase/migrations/`. They follow the draft above, with thes
 - **`aliases` and `category` are not there yet.** They arrive with the milestones that fill them: 6 (receipts) and 3 (the AI's first guess).
 - **`events` waits for milestone 4,** when Cooked it first needs the history. Nothing in milestones 2 and 3 reads it, and writing it now would make every action two writes that must succeed together. The cost: history starts at milestone 4.
 - **`recipes` and `settings`** wait for milestones 4 and 5.
-- **Still to add before the migration is applied (2026-11-16):** `batches.spot` and `ingredients.usual_spot`, for the optional spot under Storage and Spots.
+- **A purchase can note its spot** (2026-11-17): `batches.spot`, and `ingredients.usual_spot` for the food's last one. They went into the migration file itself, since it has not been applied yet. See Storage and Spots.
 
 ### Amounts
 
@@ -197,7 +197,7 @@ The code is in two languages, and each rule lives in only one of them (2026-11-1
 ### Storage and Spots
 
 - **Storage** is one of Fridge, Freezer, and Pantry. It groups the Kitchen list, sets the estimated date, and is remembered per food as `usual_storage`, so it stays a fixed list of three.
-- **Spot** (2026-11-16) is an optional label for where in that storage a purchase sits, such as "Drawer 2" or "Garage freezer". It is display text, like the labels "block" and "stalk", and no logic depends on it. A food remembers its last spot as `usual_spot`, and the edit sheet offers the spots already used in that storage as chips, so the spelling stays the same.
+- **Spot** (2026-11-16) is an optional label for where in that storage a purchase sits, such as "Drawer 2" or "Garage freezer". It is display text, like the labels "block" and "stalk", and no logic depends on it. A food remembers its last spot as `usual_spot`, and the edit sheet offers the spots already used in that storage as chips, so the spelling stays the same. A spot holds 1 to 30 characters (2026-11-17), enough for "Basement chest freezer", and a spot left empty is saved as none.
 - Passed over: tags, because a purchase is in one place at a time, and a hierarchy of shelves and drawers, which needs its own setup screen, adds taps to every entry, and goes stale when food is moved. If the garage freezer should one day be its own group in the Kitchen, the next step is named storage places, each one a kind of fridge, freezer, or pantry, still one level deep.
 
 ### Outside Recipes

@@ -61,6 +61,7 @@ describe('addPurchase', () => {
           usual_unit: 'lb',
           usual_label: null,
           usual_storage: 'fridge',
+          usual_spot: null,
         },
       ],
       batches: [
@@ -72,6 +73,7 @@ describe('addPurchase', () => {
           label: null,
           is_estimate: false,
           storage: 'fridge',
+          spot: null,
           use_by: '2026-11-15',
           date_source: 'use_by',
           price_cents: 499,
@@ -132,6 +134,7 @@ describe('addStaple', () => {
           usual_unit: null,
           usual_label: null,
           usual_storage: null,
+          usual_spot: null,
         },
       ],
       removeBatches: [],

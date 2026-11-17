@@ -18,6 +18,16 @@ describe('row checks', () => {
     expect(shoppingItemSchema.safeParse(fromDatabase).success).toBe(true);
   });
 
+  it('keeps a spot of up to 30 characters', () => {
+    const drawer = batch({ spot: 'Drawer 2' });
+    const longest = batch({ spot: 'x'.repeat(30) });
+    const food = ingredient({ usual_spot: 'Garage freezer' });
+
+    expect(batchSchema.parse(drawer)).toEqual(drawer);
+    expect(batchSchema.parse(longest)).toEqual(longest);
+    expect(ingredientSchema.parse(food)).toEqual(food);
+  });
+
   it('drops columns the app does not use', () => {
     const row = { ...batch(), household_id: 'anything', created_at: 'anything' };
     expect(batchSchema.parse(row)).toEqual(batch());
@@ -30,6 +40,8 @@ describe('row checks', () => {
     ['a date that is not a calendar day', batch({ use_by: '2026-11-12T00:00:00Z' })],
     ['a price with cents after the decimal point', batch({ price_cents: 2.5 })],
     ['an id that is not an id', batch({ id: 'tofu' })],
+    ['an empty spot', batch({ spot: '' })],
+    ['a spot longer than 30 characters', batch({ spot: 'x'.repeat(31) })],
   ])('refuses a purchase with %s', (_problem, row) => {
     expect(batchSchema.safeParse(row).success).toBe(false);
   });
@@ -37,6 +49,11 @@ describe('row checks', () => {
   it('refuses a food without a name, or with a kind the app does not know', () => {
     expect(ingredientSchema.safeParse(ingredient({ name: '' })).success).toBe(false);
     expect(ingredientSchema.safeParse(ingredient({ tracking: 'length' as never })).success).toBe(false);
+  });
+
+  it('refuses a food whose usual spot is empty or longer than 30 characters', () => {
+    expect(ingredientSchema.safeParse(ingredient({ usual_spot: '' })).success).toBe(false);
+    expect(ingredientSchema.safeParse(ingredient({ usual_spot: 'x'.repeat(31) })).success).toBe(false);
   });
 
   it('refuses the whole household when one row is wrong', () => {

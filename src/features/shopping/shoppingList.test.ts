@@ -90,6 +90,7 @@ describe('buyItem', () => {
             usual_unit: 'lb',
             usual_label: null,
             usual_storage: null,
+            usual_spot: null,
           },
         ],
         batches: [
@@ -101,6 +102,7 @@ describe('buyItem', () => {
             label: null,
             is_estimate: false,
             storage: 'fridge',
+            spot: null,
             use_by: '2026-11-19',
             date_source: 'estimated',
             price_cents: null,
@@ -134,6 +136,7 @@ describe('buyItem', () => {
         label: 'block',
         is_estimate: true,
         storage: 'freezer',
+        spot: null,
         use_by: '2027-02-10',
         date_source: 'estimated',
         price_cents: null,
@@ -164,6 +167,7 @@ describe('buyItem', () => {
         usual_unit: null,
         usual_label: null,
         usual_storage: null,
+        usual_spot: null,
       },
     ]);
     expect(bought?.changes.batches?.[0]).toMatchObject({
