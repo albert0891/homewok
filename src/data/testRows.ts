@@ -19,6 +19,7 @@ export function ingredient(fields: Partial<Ingredient> = {}): Ingredient {
     usual_unit: null,
     usual_label: null,
     usual_storage: null,
+    usual_spot: null,
     ...fields,
   };
 }
@@ -36,6 +37,7 @@ export function batch(fields: Partial<Batch> = {}): Batch {
     label: 'block',
     is_estimate: false,
     storage: 'fridge',
+    spot: null,
     use_by: '2026-11-19',
     date_source: 'estimated',
     price_cents: null,

@@ -71,6 +71,8 @@ create table public.ingredients (
   usual_unit text check (char_length(usual_unit) between 1 and 12),
   usual_label text check (char_length(usual_label) between 1 and 20),
   usual_storage text check (usual_storage in ('fridge', 'freezer', 'pantry')),
+  -- Where in that storage the last one sat, such as "Drawer 2".
+  usual_spot text check (char_length(usual_spot) between 1 and 30),
   created_at timestamptz not null default now(),
   constraint staples_have_a_status check ((tracking = 'level') = (status is not null))
 );
@@ -94,6 +96,9 @@ create table public.batches (
   -- True when the amount is a guess. The app shows it with "~".
   is_estimate boolean not null default false,
   storage text not null check (storage in ('fridge', 'freezer', 'pantry')),
+  -- Where in that storage it sits, such as "Drawer 2" or "Garage freezer". Optional,
+  -- and display text only, like label: nothing depends on it.
+  spot text check (char_length(spot) between 1 and 30),
   use_by date not null,
   -- Where the date came from. 'estimated' is the app's own guess, shown as "about".
   date_source text not null default 'estimated'
@@ -214,8 +219,8 @@ security invoker
 set search_path = ''
 as $$
   insert into public.ingredients
-    (id, name, tracking, status, usual_amount, usual_unit, usual_label, usual_storage)
-  select id, name, tracking, status, usual_amount, usual_unit, usual_label, usual_storage
+    (id, name, tracking, status, usual_amount, usual_unit, usual_label, usual_storage, usual_spot)
+  select id, name, tracking, status, usual_amount, usual_unit, usual_label, usual_storage, usual_spot
   from jsonb_to_recordset(save_ingredients) as new_row (
     id uuid,
     name text,
@@ -224,7 +229,8 @@ as $$
     usual_amount double precision,
     usual_unit text,
     usual_label text,
-    usual_storage text
+    usual_storage text,
+    usual_spot text
   )
   on conflict (id) do update set
     name = excluded.name,
@@ -233,11 +239,12 @@ as $$
     usual_amount = excluded.usual_amount,
     usual_unit = excluded.usual_unit,
     usual_label = excluded.usual_label,
-    usual_storage = excluded.usual_storage;
+    usual_storage = excluded.usual_storage,
+    usual_spot = excluded.usual_spot;
 
   insert into public.batches
-    (id, ingredient_id, amount, unit, label, is_estimate, storage, use_by, date_source, price_cents)
-  select id, ingredient_id, amount, unit, label, is_estimate, storage, use_by, date_source, price_cents
+    (id, ingredient_id, amount, unit, label, is_estimate, storage, spot, use_by, date_source, price_cents)
+  select id, ingredient_id, amount, unit, label, is_estimate, storage, spot, use_by, date_source, price_cents
   from jsonb_to_recordset(save_batches) as new_row (
     id uuid,
     ingredient_id uuid,
@@ -246,6 +253,7 @@ as $$
     label text,
     is_estimate boolean,
     storage text,
+    spot text,
     use_by date,
     date_source text,
     price_cents integer
@@ -257,6 +265,7 @@ as $$
     label = excluded.label,
     is_estimate = excluded.is_estimate,
     storage = excluded.storage,
+    spot = excluded.spot,
     use_by = excluded.use_by,
     date_source = excluded.date_source,
     price_cents = excluded.price_cents;

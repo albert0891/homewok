@@ -154,6 +154,7 @@ export function buyItem(
     ingredient_id: ingredient.id,
     ...bought,
     storage,
+    spot: null,
     use_by: estimateUseBy(storage, today),
     date_source: 'estimated',
     price_cents: null,
