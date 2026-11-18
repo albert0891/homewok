@@ -138,6 +138,7 @@ begin
     null;
   end;
 
+  -- A already has Tofu. Adding a new food called tofu must be refused.
   begin
     perform public.apply_changes(
       save_ingredients => '[{
@@ -151,6 +152,10 @@ begin
     null; -- Expected: the household already has this name.
   end;
 
+  -- Renaming must be refused too. Renaming another of A's foods to TOFU would leave
+  -- two foods named Tofu. Salt is only a food A already has; any other would do. In
+  -- the app this is a rename in the edit sheet, which renameFood refuses first, as
+  -- "taken", so the database is the second guard.
   begin
     update public.ingredients set name = 'TOFU' where name = 'Salt';
     raise exception 'Salt was renamed to TOFU next to Tofu';
