@@ -14,6 +14,13 @@
 - The household keeps the sample, so `HW-11` has something to list.
 - Not checked: the iPhone 17e and 18 Pro Max, since the sheet only gained a section of the same parts; loading while offline, which goes through the same queue as every change (`HW-53`); and a refused load, which the queue undoes the same way.
 - Next: the user reviews this pull request. Nothing else is in To Do on the board, and `HW-11` (the Kitchen list) is the top card in the backlog.
+- PR #7 (`HW-25`) was merged as `0010fc1`.
+- **Database checks for units and names (`HW-60`).** A second migration, `20261118000000_known_units_and_unique_names.sql`, replaces the length checks on `batches.unit`, `ingredients.usual_unit`, and `shopping_items.unit` with the six units the app knows, and adds a unique index on `ingredients (household_id, lower(name))`. The first migration is unchanged. Why and the cost (a new unit now needs a small migration) are in `docs/decisions.md`.
+- Every path that saves a food's name saves it cleaned: `newIngredient` (used by `addPurchase`, `addStaple`, and `buyItem`) and `renameFood` go through `cleanName`, a shopping item takes the cleaned name or the known food's, and the starter staples are written clean. So `lower(name)` in the database matches `sameName` in the app.
+- Before writing it, a read-only query on the hosted project found no unknown unit, no two foods with the same name in one household, and no name that is not cleaned, in 31 foods and 20 purchases.
+- `src/data/units.test.ts` reads the newest unit checks in `supabase/migrations/` and fails when they differ from `UNITS`. With `gal` removed from one check on purpose, it failed, and passed again once `gal` was back. `npm run check` passes with 245 tests.
+- `supabase/tests/two_accounts.sql` now checks that `lbs` is refused in all three tables, that `tofu` next to `Tofu` is refused, whether added or renamed, that a refused change adds nothing, and that account B can still have its own `Tofu`. A dry run on the hosted project ran the new migration and the whole check in one transaction and rolled it back: "All checks passed. Nothing was saved." A query afterwards found the old checks still in place, no new index, no test accounts, and the same 31 foods and 20 purchases.
+- **Not applied yet:** the migration waits for the user to read it and say so in chat, as in `HW-24`. Not checked on the Simulator: a refused duplicate or unit in the app, which goes through the queue's existing alert (`HW-53`).
 
 ## 2026-11-17
 

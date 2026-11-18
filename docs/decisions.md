@@ -103,6 +103,8 @@ The tables are in `supabase/migrations/`. They follow the draft above, with thes
 - **`events` waits for milestone 4,** when Cooked it first needs the history. Nothing in milestones 2 and 3 reads it, and writing it now would make every action two writes that must succeed together. The cost: history starts at milestone 4.
 - **`recipes` and `settings`** wait for milestones 4 and 5.
 - **A purchase can note its spot** (2026-11-17): `batches.spot`, and `ingredients.usual_spot` for the food's last one. They went into the migration file itself, since it had not been applied yet. It was applied on 2026-11-17 (`HW-24`). See Storage and Spots.
+- **The database knows the units, and each name once** (2026-11-18, `HW-60`, in the second migration). `batches.unit`, `ingredients.usual_unit`, and `shopping_items.unit` only take `lb`, `oz`, `fl oz`, `cup`, `gal`, or `count`, like storage and status already did. Before, any unit of 1 to 12 characters got in, and a wrong one such as `lbs` was only caught when the app read the household, so the whole Kitchen failed to load. Now the write is refused, the queue undoes it on screen with its alert, and everything else keeps working. And a unique index on `ingredients (household_id, lower(name))` stops one household from having "Ground pork" and "ground pork". The app already looks for the food before adding one, but two phones offline or a server that writes foods could get past that and split the purchases between two foods. Two households can still each have a food of the same name. The index only matches the app's rule because every path that saves a name saves it cleaned (`cleanName` in `src/features/kitchen/stock.ts`). Merging two foods that slipped past it belongs with family sharing.
+- **The cost: a new unit needs a small migration.** It is still one line in `src/data/units.ts`, plus a migration that drops the three unit checks and adds them again with the longer list. New units are rare, and `src/data/units.test.ts` fails until the newest unit checks in `supabase/migrations/` equal `UNITS`.
 
 ### The Offline Copy and the Queue
 
@@ -120,7 +122,7 @@ Built on 2026-11-17 (`HW-53`). Every screen from `HW-11` on reads and saves thro
 - Code only knows three amount kinds: weight, volume, and count. A label such as "stalk" is display text, and no logic depends on it.
 - Deduction rule: same kind and same label means subtract. Anything else means ask None, Some, or All. "Some" takes half of what is left and marks the amount as an estimate.
 - A deduction takes from the purchase with the soonest date first. Amounts that cannot be added, such as 1 bunch and 3 stalks, are shown side by side and halved separately by "Some" (2026-11-12).
-- Each unit is one line of data in `src/data/units.ts`: its size in the base unit, its word, its stepper step, and its one-tap amounts. A total across purchases uses the largest of their units.
+- Each unit is one line of data in `src/data/units.ts`: its size in the base unit, its word, its stepper step, and its one-tap amounts. A total across purchases uses the largest of their units. Since `HW-60` the database also checks the unit, so a new one needs a small migration too (see What milestone 2 built).
 - Using a food up keeps the food, with its usual purchase, and offers Add to list. Removing a food's last purchase removes the food too, so a food added by mistake leaves nothing behind (2026-11-12).
 
 ## Where Logic Lives

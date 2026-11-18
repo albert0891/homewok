@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { fromBase, toBase, unitOf, UNITS, unitsOfKind } from './units';
 
 describe('units', () => {
@@ -33,5 +36,48 @@ describe('units', () => {
       expect(unit.step).toBeGreaterThan(0);
       expect(unit.chips.length).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * The database refuses a unit it does not know (HW-60), so its list must equal UNITS.
+ * This reads the newest migration that sets the unit checks and compares each list
+ * with the ids above. A new unit therefore fails here until a migration adds it.
+ */
+describe('UNITS mirror the unit checks in supabase/migrations', () => {
+  const folder = join(__dirname, '../../supabase/migrations');
+  const CHECK = /add constraint (\w+)\s+check \((\w+) in \(([^)]*)\)\)/g;
+
+  /** Each unit check in one migration: constraint name to the units it allows. */
+  function unitChecks(sql: string): Map<string, string[]> {
+    const checks = new Map<string, string[]>();
+    for (const [, name, column, list] of sql.matchAll(CHECK)) {
+      if (column === 'unit' || column === 'usual_unit') {
+        checks.set(
+          name,
+          list.split(',').map((unit) => unit.trim().replace(/^'|'$/g, '')),
+        );
+      }
+    }
+    return checks;
+  }
+
+  const newest =
+    readdirSync(folder)
+      .sort()
+      .map((file) => unitChecks(readFileSync(join(folder, file), 'utf8')))
+      .filter((checks) => checks.size > 0)
+      .pop() ?? new Map<string, string[]>();
+
+  it('checks the unit of every table that keeps one', () => {
+    expect([...newest.keys()].sort()).toEqual([
+      'batches_unit_known',
+      'ingredients_usual_unit_known',
+      'shopping_items_unit_known',
+    ]);
+  });
+
+  it.each([...newest.entries()])('%s allows exactly the units the app knows', (_name, units) => {
+    expect([...units].sort()).toEqual(UNITS.map((unit) => unit.id).sort());
   });
 });
