@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
+import { HouseholdProvider } from '@/data/HouseholdProvider';
 import { SessionProvider, useSession } from '@/features/auth/session';
 import { radius, useColors } from '@/theme/theme';
 
@@ -12,7 +13,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   return (
     <SessionProvider>
-      <RootNavigator />
+      {/* The household data needs to know who is signed in, so it sits inside. */}
+      <HouseholdProvider>
+        <RootNavigator />
+      </HouseholdProvider>
     </SessionProvider>
   );
 }
