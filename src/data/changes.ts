@@ -6,19 +6,26 @@
  * that to its own copy right away with applyChanges, and sends the same thing to
  * the database, where apply_changes (in supabase/migrations) does it in one
  * transaction.
+ *
+ * A change that is still waiting to be sent is kept on the phone, so it is checked
+ * with zod like a row when it is read back.
  */
-import type { Batch, HouseholdData, Ingredient, ShoppingItem } from './rows';
+import { z } from 'zod';
 
-export type Changes = {
+import { batchSchema, type HouseholdData, ingredientSchema, shoppingItemSchema } from './rows';
+
+export const changesSchema = z.object({
   /** Rows to save. A row whose id is already there replaces the old one. */
-  ingredients?: Ingredient[];
-  batches?: Batch[];
-  items?: ShoppingItem[];
+  ingredients: z.array(ingredientSchema).optional(),
+  batches: z.array(batchSchema).optional(),
+  items: z.array(shoppingItemSchema).optional(),
   /** Ids of rows to remove. Removing a food also removes its purchases. */
-  removeIngredients?: string[];
-  removeBatches?: string[];
-  removeItems?: string[];
-};
+  removeIngredients: z.array(z.uuid()).optional(),
+  removeBatches: z.array(z.uuid()).optional(),
+  removeItems: z.array(z.uuid()).optional(),
+});
+
+export type Changes = z.infer<typeof changesSchema>;
 
 /** Puts saved rows into a list: a known id is replaced in its place, a new one goes at the end. */
 function save<Row extends { id: string }>(rows: Row[], saved: Row[] = []): Row[] {
