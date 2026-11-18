@@ -66,16 +66,36 @@ export function applyChanges(data: HouseholdData, changes: Changes): HouseholdDa
   };
 }
 
-/** What turns `after` back into `before`: the rows to put back and the ids to drop. */
-function wayBack<Row extends { id: string }>(before: Row[], after: Row[]) {
-  const afterById = new Map(after.map((row) => [row.id, row]));
-  const beforeIds = new Set(before.map((row) => row.id));
+/** What turns the rows `from` into the rows `to`: the rows to save and the ids to remove. */
+function difference<Row extends { id: string }>(from: Row[], to: Row[]) {
+  const fromById = new Map(from.map((row) => [row.id, row]));
+  const toIds = new Set(to.map((row) => row.id));
 
   return {
     // applyChanges hands back the very same object for a row it did not touch. So a
-    // row that is now a different object, or missing, was changed or removed.
-    putBack: before.filter((row) => afterById.get(row.id) !== row),
-    drop: after.filter((row) => !beforeIds.has(row.id)).map((row) => row.id),
+    // row that is a different object now, or a new one, was saved.
+    save: to.filter((row) => fromById.get(row.id) !== row),
+    remove: from.filter((row) => !toIds.has(row.id)).map((row) => row.id),
+  };
+}
+
+/**
+ * The changes that turn `before` into `after`, where `after` was made from `before`
+ * with applyChanges, in one step or in several. Each row is in them once, as it
+ * ended up, so several of the kitchen's rules can be sent as one action.
+ */
+export function changesBetween(before: HouseholdData, after: HouseholdData): Required<Changes> {
+  const ingredients = difference(before.ingredients, after.ingredients);
+  const batches = difference(before.batches, after.batches);
+  const items = difference(before.items, after.items);
+
+  return {
+    ingredients: ingredients.save,
+    batches: batches.save,
+    items: items.save,
+    removeIngredients: ingredients.remove,
+    removeBatches: batches.remove,
+    removeItems: items.remove,
   };
 }
 
@@ -84,19 +104,7 @@ function wayBack<Row extends { id: string }>(before: Row[], after: Row[]) {
  * applied. This is what Undo sends.
  */
 export function undoChanges(before: HouseholdData, changes: Changes): Required<Changes> {
-  const after = applyChanges(before, changes);
-  const ingredients = wayBack(before.ingredients, after.ingredients);
-  const batches = wayBack(before.batches, after.batches);
-  const items = wayBack(before.items, after.items);
-
-  return {
-    ingredients: ingredients.putBack,
-    batches: batches.putBack,
-    items: items.putBack,
-    removeIngredients: ingredients.drop,
-    removeBatches: batches.drop,
-    removeItems: items.drop,
-  };
+  return changesBetween(applyChanges(before, changes), before);
 }
 
 /** The same changes under the parameter names of the database's apply_changes. */

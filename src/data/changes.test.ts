@@ -1,4 +1,4 @@
-import { applyChanges, type Changes, toRpcArgs, undoChanges } from './changes';
+import { applyChanges, type Changes, changesBetween, toRpcArgs, undoChanges } from './changes';
 import type { HouseholdData } from './rows';
 import { batch, household, id, ingredient, item } from './testRows';
 
@@ -82,6 +82,46 @@ function sorted(data: HouseholdData): HouseholdData {
     items: [...data.items].sort(byId),
   };
 }
+
+describe('changesBetween', () => {
+  const eggs = ingredient({ id: id(3), name: 'Eggs' });
+  const eggBatch = batch({ id: id(103), ingredient_id: eggs.id, amount: 12, label: null });
+
+  it('turns the data before into the data after, even when it took several steps', () => {
+    const first = applyChanges(before, { ingredients: [eggs], batches: [eggBatch] });
+    const second = applyChanges(first, {
+      batches: [{ ...eggBatch, amount: 10 }],
+      removeBatches: [porkBatch.id],
+    });
+    const after = applyChanges(second, { removeIngredients: [tofu.id] });
+
+    const changes = changesBetween(before, after);
+
+    expect(sorted(applyChanges(before, changes))).toEqual(sorted(after));
+  });
+
+  it('saves a row that changed twice only once, as it ended up', () => {
+    // The database cannot change one row twice in a call, so one action may hold each row once.
+    const first = applyChanges(before, { batches: [{ ...tofuBatch, amount: 1 }] });
+    const after = applyChanges(first, { batches: [{ ...tofuBatch, amount: 3 }] });
+
+    expect(changesBetween(before, after).batches).toEqual([{ ...tofuBatch, amount: 3 }]);
+  });
+
+  it('leaves out the rows that did not change', () => {
+    const oatMilk = { ...milk, name: 'Oat milk' };
+    const after = applyChanges(before, { items: [oatMilk] });
+
+    expect(changesBetween(before, after)).toEqual({
+      ingredients: [],
+      batches: [],
+      items: [oatMilk],
+      removeIngredients: [],
+      removeBatches: [],
+      removeItems: [],
+    });
+  });
+});
 
 describe('undoChanges', () => {
   const eggs = ingredient({ id: id(3), name: 'Eggs' });

@@ -1,5 +1,20 @@
 # Dev Log
 
+## 2026-11-18
+
+- PR #6 (`HW-53`) was merged as `9c141ed`.
+- **Load sample kitchen (`HW-25`).** In a development build, the Settings sheet now ends with a Developer part: a Load sample kitchen button, and a line that counts what the Kitchen list holds now, such as "Kitchen now: Fridge 11, Freezer 5, Pantry 5, Staples 12." The button asks first, then saves the whole sample as one action through the queue, so it shows at once and waits offline like any other change.
+- The sample is data in `src/features/sample/sampleKitchen.ts`: 21 purchases of 20 foods, with dates counted from the day it is loaded (one past its date, five within three days, five in the freezer, and one more than a year out), and four staples: Soy sauce Low and Sesame oil Out from the starter list, plus Shaoxing wine and Chili crisp. The checks of `HW-15` use some of it: 12 eggs, two purchases of ground pork, and 1 bunch of scallions.
+- Each purchase goes in through `addPurchase` and each staple through `addStaple` and `setStatus`, the rules a person's own taps will use, one after another on a copy. The new `changesBetween` in `src/data/changes.ts` turns the difference into one action with each row in it once, because the database cannot change a row twice in one call, and `undoChanges` now uses it too. Loading again replaces the purchases of the sample's foods, so nothing is doubled, and the foods keep their ids. Foods outside the sample are left alone.
+- It sits in Settings because Settings opens from every tab, and the Kitchen screen, the other place it could go, is the next card (`HW-11`).
+- Tests first: 15 new tests, 3 for `changesBetween` and 12 for the sample, 241 in all, and both files failed before the code existed. Then each of 7 lines that matter was removed once on purpose. Ignoring the sample's date sources passed every test, so a test for it was added; after that, each removal failed at least one test.
+- At the largest text size the new part made the Settings sheet taller than the screen, and the sheet could not scroll, so the button was cut off. The sheet's content is a ScrollView now, like the tab screens, and at the default size it still fits its content.
+- Checked on the iPhone 18 Pro Simulator against the real Supabase. Before, the household held its 10 starter staples, all Have, and nothing else. After Load: 20 foods with 21 purchases, dates from 2026-11-17 to 2027-12-23, Soy sauce Low, Sesame oil Out, Shaoxing wine Have, and Chili crisp Low, with no refusal alert. A second Load replaced all 21 purchases and made no new foods: 32 foods, no name twice. The sheet was also checked in dark mode at the largest text size, where it scrolls to the end.
+- **Release build.** `npx expo run:ios --configuration Release` built the app with its JavaScript inside, installed it on the same Simulator, and it opened signed in. Its Settings sheet holds only the account and Sign out, with no Developer part. Only the button is left out: the sample's code is still in the release app, unused. The development build was put back afterwards.
+- The household keeps the sample, so `HW-11` has something to list.
+- Not checked: the iPhone 17e and 18 Pro Max, since the sheet only gained a section of the same parts; loading while offline, which goes through the same queue as every change (`HW-53`); and a refused load, which the queue undoes the same way.
+- Next: the user reviews this pull request. Nothing else is in To Do on the board, and `HW-11` (the Kitchen list) is the top card in the backlog.
+
 ## 2026-11-17
 
 - PR #3 (`HW-21`) was merged as `85dfb9f`, and CI passed on `main` for the first time, in 66 seconds.
