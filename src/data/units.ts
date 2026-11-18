@@ -3,7 +3,9 @@
  *
  * The database keeps every amount in a base unit: grams for weight, ml for volume,
  * and a plain number for counted foods. A unit here only says how an amount is typed
- * and shown, so adding one (grams, say) is a new line in this list and nothing else.
+ * and shown, so adding one (grams, say) is a new line in this list. The database
+ * refuses a unit it does not know, so a new one also needs a small migration that
+ * adds it to the unit checks. units.test.ts fails until the two lists agree.
  */
 
 /** What an amount measures. Code never needs to know more about a food than this. */

@@ -95,6 +95,80 @@ begin
 end;
 $$;
 
+-- The database refuses a unit the app does not know, in every table that keeps one,
+-- and a second food whose name differs only in capitals (HW-60).
+do $$
+begin
+  begin
+    perform public.apply_changes(
+      save_batches => '[{
+        "id": "a4444444-4444-4444-8444-444444444444",
+        "ingredient_id": "a1111111-1111-4111-8111-111111111111",
+        "amount": 2, "unit": "lbs", "label": null, "is_estimate": false,
+        "storage": "fridge", "use_by": "2030-01-01", "date_source": "estimated", "price_cents": null
+      }]'
+    );
+    raise exception 'A purchase with the unknown unit lbs was saved';
+  exception when check_violation then
+    null; -- Expected: the unit check refuses it.
+  end;
+
+  begin
+    perform public.apply_changes(
+      save_ingredients => '[{
+        "id": "a5555555-5555-4555-8555-555555555555", "name": "Pork", "tracking": "weight",
+        "status": null, "usual_amount": 454, "usual_unit": "lbs", "usual_label": null,
+        "usual_storage": "fridge"
+      }]'
+    );
+    raise exception 'A food with the unknown usual unit lbs was saved';
+  exception when check_violation then
+    null;
+  end;
+
+  begin
+    perform public.apply_changes(
+      save_shopping_items => '[{
+        "id": "a6666666-6666-4666-8666-666666666666", "ingredient_id": null, "name": "Pork",
+        "amount": 454, "unit": "lbs", "label": null, "created_at": "2030-01-01T00:00:00Z"
+      }]'
+    );
+    raise exception 'A shopping item with the unknown unit lbs was saved';
+  exception when check_violation then
+    null;
+  end;
+
+  -- A already has Tofu. Adding a new food called tofu must be refused.
+  begin
+    perform public.apply_changes(
+      save_ingredients => '[{
+        "id": "a7777777-7777-4777-8777-777777777777", "name": "tofu", "tracking": "count",
+        "status": null, "usual_amount": null, "usual_unit": null, "usual_label": null,
+        "usual_storage": null
+      }]'
+    );
+    raise exception 'A second food named tofu was saved next to Tofu';
+  exception when unique_violation then
+    null; -- Expected: the household already has this name.
+  end;
+
+  -- Renaming must be refused too. Renaming another of A's foods to TOFU would leave
+  -- two foods named Tofu. Salt is only a food A already has; any other would do. In
+  -- the app this is a rename in the edit sheet, which renameFood refuses first, as
+  -- "taken", so the database is the second guard.
+  begin
+    update public.ingredients set name = 'TOFU' where name = 'Salt';
+    raise exception 'Salt was renamed to TOFU next to Tofu';
+  exception when unique_violation then
+    null;
+  end;
+
+  assert (select count(*) from public.ingredients) = 11, 'A refused change still added a food';
+  assert (select count(*) from public.batches) = 1, 'A refused change still added a purchase';
+  assert (select count(*) from public.shopping_items) = 1, 'A refused change still added a shopping item';
+end;
+$$;
+
 
 -- Account B: sees none of it, and cannot change any of it --------------------------
 
@@ -160,6 +234,20 @@ begin
   exception when insufficient_privilege then
     null;
   end;
+end;
+$$;
+
+-- A food name is unique within a household only: B can have its own Tofu (HW-60).
+do $$
+begin
+  perform public.apply_changes(
+    save_ingredients => '[{
+      "id": "b1111111-1111-4111-8111-111111111111", "name": "Tofu", "tracking": "count",
+      "status": null, "usual_amount": null, "usual_unit": null, "usual_label": null,
+      "usual_storage": null
+    }]'
+  );
+  assert (select count(*) from public.ingredients) = 11, 'B could not add a Tofu of its own';
 end;
 $$;
 
