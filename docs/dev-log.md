@@ -20,7 +20,8 @@
 - Before writing it, a read-only query on the hosted project found no unknown unit, no two foods with the same name in one household, and no name that is not cleaned, in 31 foods and 20 purchases.
 - `src/data/units.test.ts` reads the newest unit checks in `supabase/migrations/` and fails when they differ from `UNITS`. With `gal` removed from one check on purpose, it failed, and passed again once `gal` was back. `npm run check` passes with 245 tests.
 - `supabase/tests/two_accounts.sql` now checks that `lbs` is refused in all three tables, that `tofu` next to `Tofu` is refused, whether added or renamed, that a refused change adds nothing, and that account B can still have its own `Tofu`. A dry run on the hosted project ran the new migration and the whole check in one transaction and rolled it back: "All checks passed. Nothing was saved." A query afterwards found the old checks still in place, no new index, no test accounts, and the same 31 foods and 20 purchases.
-- **Not applied yet:** the migration waits for the user to read it and say so in chat, as in `HW-24`. Not checked on the Simulator: a refused duplicate or unit in the app, which goes through the queue's existing alert (`HW-53`).
+- **Applied** through the Supabase connector after the user's go-ahead in chat. It is version `20261118233705` in the database. Afterwards the three checks list the six units, the unique index exists, and the household has the same 31 foods and 20 purchases. `supabase/tests/two_accounts.sql` passed on the applied database: "All checks passed. Nothing was saved." The security advisor still reports only Leaked Password Protection, and the performance advisor one unused index on `household_members`.
+- Not checked on the Simulator: a refused duplicate or unit in the app, which goes through the queue's existing alert (`HW-53`).
 
 ## 2026-11-17
 
