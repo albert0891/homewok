@@ -9,6 +9,14 @@
 - Not checked: the SQL has not run anywhere, because this Mac has no Postgres. `HW-24` applies it and runs `supabase/tests/two_accounts.sql`, whose rows have no spot, which the migration allows.
 - The migration test compares the row checks with only one of the four column lists that `apply_changes` has for each table, so a column left out of the insert, select, or update list would pass. That is `HW-57` in the backlog, at low priority.
 - Next: the user reviews PR #4. `HW-24` (read and apply the migration) is next in the backlog.
+- PR #4 (`HW-23`) was merged as `6619901`.
+- The course's chapter 8 (database and RLS) was written as the guide for reading the migration, the first check of `HW-24`. Writing it turned up a gap: deleting an account removes its membership, but its household and every row in it stay behind. Nothing deletes accounts yet, so it is `HW-58` in the backlog, at low priority, for when account deletion is built before any App Review.
+- **The migration is applied (`HW-24`).** The user's go-ahead came in chat, on one condition: nothing in the upcoming work may need this migration changed. Checked against every open card and `docs/spec.md`: the milestone 2 cards fit the five tables as they are, and later milestones only add to them, each with a new migration file, as planned under What milestone 2 built. Two of those additions were noted on their cards: a last-bought time for Recent chips (`HW-30`) and a last price for the cost per serving (`HW-35`), because a purchase's row is deleted once it is used up. Reading the migration with chapter 8 is still open for the user.
+- Applied through the Supabase connector. The SQL the database stored is identical to the file: same checksum, 14,673 characters. The connector records a migration under the time it ran, so the file `20261112000000_kitchen_and_shopping.sql` is version `20261118015757` in the database, which `docs/decisions.md` (Migrations) now says.
+- After applying: row-level security is on for all five tables, with five policies, and the new-user trigger exists. The only account, the user's, got its household and the ten staples from the migration's last step. The security advisor reports only Leaked Password Protection, which is about password sign-ins, and Homewok has none. The performance advisor reports six unused indexes, as expected on tables that no query has used yet.
+- `supabase/tests/two_accounts.sql` passed through the connector: "All checks passed. Nothing was saved." A count afterwards found no test accounts and the same rows as before: one household, ten foods, no purchases, and no shopping items.
+- Not checked: a real sign-up through Google, where the trigger runs inside Supabase Auth, because there is no second account. The app does not read these tables yet; that is `HW-53`.
+- Next: the user reviews this pull request. `HW-53` (the data layer) is the top card in the backlog.
 
 ## 2026-11-16
 
