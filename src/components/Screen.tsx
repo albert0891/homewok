@@ -11,6 +11,13 @@ import { Title } from './Title';
 type ScreenProps = PropsWithChildren<{
   /** The serif title at the top: "Tonight", "Kitchen". */
   title: string;
+  /**
+   * The content is a list that scrolls by itself, such as a SectionList. Screen then
+   * leaves the scrolling to it, since a list inside a ScrollView would lose its own.
+   * The list should set contentInsetAdjustmentBehavior="automatic", so its rows can
+   * pass under the tab bar but the last one still ends above it.
+   */
+  list?: boolean;
 }>;
 
 /**
@@ -18,14 +25,15 @@ type ScreenProps = PropsWithChildren<{
  * the gear that opens Settings. The gear sits in the same place on every tab, so
  * nobody has to remember which tab has it.
  */
-export function Screen({ title, children }: ScreenProps) {
+export function Screen({ title, list = false, children }: ScreenProps) {
   const colors = useColors();
   const router = useRouter();
 
   return (
     // The safe area keeps the content clear of the status bar and the tab bar.
+    // A list runs on under the tab bar, and iOS insets its rows to clear the bar.
     <SafeAreaView
-      edges={['top', 'bottom']}
+      edges={list ? ['top'] : ['top', 'bottom']}
       style={[styles.screen, { backgroundColor: colors.canvas }]}>
       <View style={styles.titleRow}>
         <Title size="largeTitle" style={styles.title}>
@@ -39,10 +47,14 @@ export function Screen({ title, children }: ScreenProps) {
           />
         </View>
       </View>
-      {/* A ScrollView, so nothing is cut off at the largest text sizes. */}
-      <ScrollView contentContainerStyle={styles.body} alwaysBounceVertical={false}>
-        {children}
-      </ScrollView>
+      {list ? (
+        <View style={styles.list}>{children}</View>
+      ) : (
+        // A ScrollView, so nothing is cut off at the largest text sizes.
+        <ScrollView contentContainerStyle={styles.body} alwaysBounceVertical={false}>
+          {children}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -64,6 +76,9 @@ const styles = StyleSheet.create({
     // An icon button's tap area is wider than its icon. Pulling it into the gutter
     // lines the icon itself up with the edge of the content.
     marginRight: -(size.tapTarget - ICON_SIZE) / 2,
+  },
+  list: {
+    flex: 1,
   },
   body: {
     flexGrow: 1,

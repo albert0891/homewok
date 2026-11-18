@@ -115,3 +115,13 @@ export function kitchenSections(data: HouseholdData, today: Day): KitchenSection
 
   return [...places, staples].filter((section) => section.data.length > 0);
 }
+
+/**
+ * What VoiceOver reads for a row, in the order the row shows it. A pill alone, such
+ * as "2 days", would not say what it means, so it gets "use soon" in front.
+ */
+export function rowLabel(row: KitchenRow): string {
+  return [row.name, row.meta, row.pill && `use soon: ${row.pill}`, row.warning, row.amount]
+    .filter((part) => part !== null)
+    .join(', ');
+}
