@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Title } from '@/components/Title';
 import { signOut } from '@/features/auth/google';
 import { useSession } from '@/features/auth/session';
+import { SampleKitchenSection } from '@/features/sample/SampleKitchenSection';
 import { space, type, useColors } from '@/theme/theme';
 
 type Status = 'idle' | 'busy' | 'failed';
 
 /**
- * The settings sheet. For now it shows who is signed in and lets them sign out.
- * People, foods to avoid, cuisines, and the reminder join it in milestone 5.
+ * The settings sheet. For now it shows who is signed in and lets them sign out, and
+ * in development builds it can load the sample kitchen. People, foods to avoid,
+ * cuisines, and the reminder join it in milestone 5.
  */
 export function SettingsScreen() {
   const colors = useColors();
@@ -30,7 +32,9 @@ export function SettingsScreen() {
   }
 
   return (
-    <View style={styles.sheet}>
+    // The sheet fits its content. At the largest text sizes that is taller than the
+    // screen, so it scrolls.
+    <ScrollView contentContainerStyle={styles.sheet} alwaysBounceVertical={false}>
       <Title size="title2">Settings</Title>
 
       {email && (
@@ -49,7 +53,10 @@ export function SettingsScreen() {
         </Text>
       )}
       <Button label="Sign out" onPress={handleSignOut} busy={status === 'busy'} />
-    </View>
+
+      {/* __DEV__ is false in a release build, so the section is not there at all. */}
+      {__DEV__ && <SampleKitchenSection />}
+    </ScrollView>
   );
 }
 
