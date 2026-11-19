@@ -40,6 +40,7 @@
 - Checked on the iPhone 18 Pro Simulator: the top of the list and the gap from Fridge to Freezer at the default size, and the largest accessibility size, where a header grows only a little past the food names, as iOS's own Title 3 does.
 - `HW-12`'s first check now adds Pork belly, which the sample kitchen does not have: a food already in the Fridge would join its row as a second purchase, and the row would not show the new date.
 - `npm run check` passes with 248 tests.
+- **Spot row in the edit sheet (`HW-22`, design only).** The edit sheet's guideline in `design/components/BottomSheet.md` now describes the optional spot: a text field under the storage control, with chips for the spots already used in that storage. The design system artifact (Version 25) shows it in the edit sheet preview, with a new `.hw-field` style for the text field. Waiting for the user's approval before any app code; checked only in the artifact, not on the Simulator.
 
 ## 2026-11-17
 
