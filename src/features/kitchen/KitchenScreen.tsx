@@ -99,13 +99,16 @@ function NothingToList({ household }: { household: Household }) {
   return <ActivityIndicator accessibilityLabel="Loading your kitchen" />;
 }
 
+/**
+ * A place's name over its group, in headline and ink: a step stronger than the food
+ * names under it, since the place is what the eye looks for first. iOS's own content
+ * lists do the same; small gray headers suit a settings form.
+ */
 function SectionHeader({ title }: { title: string }) {
   const colors = useColors();
 
   return (
-    <Text
-      accessibilityRole="header"
-      style={[type.subhead, styles.header, { color: colors.inkMuted }]}>
+    <Text accessibilityRole="header" style={[type.headline, styles.header, { color: colors.ink }]}>
       {title}
     </Text>
   );
@@ -172,6 +175,8 @@ function Divider() {
 
 const styles = StyleSheet.create({
   content: {
+    // Screen leaves the side gutter to the list, so the scroll bar sits at the screen's edge.
+    paddingHorizontal: space[4],
     paddingBottom: space[4],
   },
   failed: {

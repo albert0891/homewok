@@ -15,7 +15,8 @@ type ScreenProps = PropsWithChildren<{
    * The content is a list that scrolls by itself, such as a SectionList. Screen then
    * leaves the scrolling to it, since a list inside a ScrollView would lose its own.
    * The list should set contentInsetAdjustmentBehavior="automatic", so its rows can
-   * pass under the tab bar but the last one still ends above it.
+   * pass under the tab bar but the last one still ends above it, and pad its content
+   * by the space[4] gutter, as Screen does for other content.
    */
   list?: boolean;
 }>;
@@ -60,14 +61,17 @@ export function Screen({ title, list = false, children }: ScreenProps) {
 }
 
 const styles = StyleSheet.create({
+  // The side gutter is inside the title row and the scrolling content, not around the
+  // whole screen, so a scroll bar sits at the screen's edge, as in iOS's own apps.
+  // There a thumb can hold it to drag through a long list.
   screen: {
     flex: 1,
-    paddingHorizontal: space[4],
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: space[2],
+    paddingHorizontal: space[4],
   },
   title: {
     flex: 1,
@@ -83,6 +87,6 @@ const styles = StyleSheet.create({
   body: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingVertical: space[4],
+    padding: space[4],
   },
 });
