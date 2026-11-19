@@ -17,7 +17,7 @@
  * (supabaseRemote.ts), and the tests pass in a fake one.
  */
 import { QueryClient, useMutation, useMutationState, useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { applyChanges, type Changes } from './changes';
 import { type HouseholdData, householdDataSchema } from './rows';
@@ -161,6 +161,8 @@ export type Household = {
   error: Error | null;
   /** How many changes the database has not confirmed yet. */
   waiting: number;
+  /** Reads the household again, for a screen's Try again. */
+  reload: () => void;
 };
 
 /** The household's rows, with every change that is still waiting already in them. */
@@ -175,7 +177,11 @@ export function useHousehold(): Household {
     () => query.data && withWaitingChanges(query.data, waiting),
     [query.data, waiting],
   );
-  return { data, error: query.error, waiting: waiting.length };
+  const { refetch } = query;
+  // refetch never throws: a failed read ends up in `error`, which the screen shows.
+  const reload = useCallback(() => void refetch(), [refetch]);
+
+  return { data, error: query.error, waiting: waiting.length, reload };
 }
 
 /** Saves one action's changes. Screens show them at once, and the queue sends them. */

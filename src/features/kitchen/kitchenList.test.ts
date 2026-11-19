@@ -1,7 +1,7 @@
 import { batch, household, id, ingredient, staple } from '@/data/testRows';
 import { toBase } from '@/data/units';
 
-import { kitchenSections } from './kitchenList';
+import { type KitchenRow, kitchenSections, rowLabel } from './kitchenList';
 
 // Thursday, November 12, 2026.
 const today = '2026-11-12';
@@ -163,5 +163,33 @@ describe('kitchenSections', () => {
     const data = household({ ingredients: [tofu, pork], batches: [batch({ ingredient_id: tofu.id })] });
 
     expect(kitchenSections(data, today)[0]?.data.map((row) => row.name)).toEqual(['Tofu']);
+  });
+});
+
+describe('rowLabel', () => {
+  const row: KitchenRow = {
+    key: 'tofu',
+    ingredientId: id(1),
+    name: 'Tofu',
+    meta: null,
+    pill: null,
+    warning: null,
+    amount: '2 blocks',
+  };
+
+  it('reads the name and the amount', () => {
+    expect(rowLabel(row)).toBe('Tofu, 2 blocks');
+  });
+
+  it('reads the parts in the order they are shown, and says what the pill means', () => {
+    expect(rowLabel({ ...row, meta: '2 purchases', pill: 'Tomorrow' })).toBe(
+      'Tofu, 2 purchases, use soon: Tomorrow, 2 blocks',
+    );
+  });
+
+  it('reads the past-date warning as it is written', () => {
+    expect(rowLabel({ ...row, warning: 'Past date, check first' })).toBe(
+      'Tofu, Past date, check first, 2 blocks',
+    );
   });
 });

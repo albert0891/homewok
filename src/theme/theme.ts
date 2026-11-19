@@ -65,6 +65,8 @@ export const type = {
   largeTitle: { fontFamily: serif, fontSize: 34, lineHeight: 41, fontWeight: '400' },
   title1: { fontFamily: serif, fontSize: 28, lineHeight: 34, fontWeight: '400' },
   title2: { fontFamily: serif, fontSize: 22, lineHeight: 28, fontWeight: '400' },
+  // iOS's Title 3, in the system font: the headers over a list's groups.
+  title3: { fontSize: 20, lineHeight: 25, fontWeight: '600' },
   headline: { fontSize: 17, lineHeight: 22, fontWeight: '600' },
   body: { fontSize: 17, lineHeight: 22, fontWeight: '400' },
   subhead: { fontSize: 15, lineHeight: 20, fontWeight: '400' },

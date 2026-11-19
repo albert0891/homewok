@@ -3,7 +3,7 @@ import { type StyleProp, Text, type TextStyle } from 'react-native';
 
 import { type, useColors } from '@/theme/theme';
 
-type TitleSize = 'largeTitle' | 'title1' | 'title2';
+type TitleSize = 'largeTitle' | 'title1' | 'title2' | 'title3';
 
 /**
  * How far each title may grow with the text size setting. React Native grows all
@@ -14,6 +14,7 @@ const MAX_GROWTH: Record<TitleSize, number> = {
   largeTitle: 60 / 34,
   title1: 58 / 28,
   title2: 56 / 22,
+  title3: 55 / 20,
 };
 
 type TitleProps = PropsWithChildren<{
@@ -21,7 +22,10 @@ type TitleProps = PropsWithChildren<{
   style?: StyleProp<TextStyle>;
 }>;
 
-/** A serif title in the `ink` color: screen names, dish names, and sheet titles. */
+/**
+ * A title in the `ink` color: screen names, dish names, and sheet titles in the serif,
+ * and the headers over a list's groups (`title3`) in the system font.
+ */
 export function Title({ size, style, children }: TitleProps) {
   const colors = useColors();
 

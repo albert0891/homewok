@@ -14,7 +14,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 ## Color
 
 - Put every screen on `canvas`. Put lists, cards, sheets, and fields on `surface`.
-- Set text in `ink`; meta lines, helper text, and section headers in `ink-muted`.
+- Set text in `ink`, list section headers included; meta lines and helper text in `ink-muted`.
 - Use `accent` (persimmon) for the one primary button on a screen, the check of a bought item, and the active tab. Never for running text: accent-colored words use `accent-ink`.
 - Show use-soon foods with an `accent-tint` pill and `accent-ink` text. Show past-date foods with `danger` text and the words "Past date". These two always differ by their words, not just their hue.
 - Draw dividers with `hairline` and the outlines of chips, fields, steppers, and secondary buttons with `control-border`.
@@ -24,8 +24,8 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 ## Type
 
 - Set screen titles in `large-title`, dish names in `title-1`, and sheet titles and empty-state headlines in `title-2`. These use the serif family (`ui-serif`, Apple's New York) and appear nowhere else.
-- Set everything else in the system sans: `body` for names and steps, `headline` for button labels, `subhead` for meta lines, `footnote` for helper text, `caption` for pills and tab labels.
-- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it. Titles stop at the largest sizes iOS itself gives them: 60px for `large-title`, 58px for `title-1`, and 56px for `title-2`.
+- Set everything else in the system sans: `title-3` for list section headers, `body` for names and steps, `headline` for button labels, `subhead` for meta lines, `footnote` for helper text, `caption` for pills and tab labels.
+- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it. Titles stop at the largest sizes iOS itself gives them: 60px for `large-title`, 58px for `title-1`, 56px for `title-2`, and 55px for `title-3`.
 - Line up numbers in amounts and costs with tabular figures.
 
 ## Space and shape
@@ -39,7 +39,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - The login page is laid out like a title page: the wok doodle on a short drawn shelf line, then the name and the tagline, all centered, with the group a little above the middle and Continue with Google at the bottom.
 - Four tabs in the native iOS tab bar: Tonight, Kitchen, Shopping, Recipes.
-- Every tab has the same title row: its `large-title` on the left and the Settings gear on the right.
+- Every tab has the same title row: its `large-title` on the left and the Settings gear on the right. A tab that adds things, such as the Kitchen, puts its + button just left of the gear, so the gear never moves.
 - Lists are inset grouped (`ListGroup`): one row per food, grouped by Fridge, Freezer, Pantry, and Staples.
 - Focused tasks open in a `BottomSheet` with one primary action at the bottom.
 - Show what a screen does even when empty: an `EmptyState` with one doodle, one line, and one action.
@@ -68,8 +68,9 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - Mirror `tokens.json` in one theme file in the app, and read colors by name for the current color scheme. Components never contain hex values.
 - Use `fontFamily: 'ui-serif'` for titles; React Native supports the iOS generic families. Use the default system font for everything else.
-- React Native grows all text by one factor, so cap titles with `maxFontSizeMultiplier`: 60/34 for `large-title`, 58/28 for `title-1`, and 56/22 for `title-2`.
+- React Native grows all text by one factor, so cap titles with `maxFontSizeMultiplier`: 60/34 for `large-title`, 58/28 for `title-1`, 56/22 for `title-2`, and 55/20 for `title-3`.
 - Build lists on `FlatList` or `SectionList`, sheets on the native sheet presentation, and tabs on Expo Router's native tabs.
+- Put the screen gutter inside a scrolling view's content (`contentContainerStyle`), not around the view, so its scroll bar sits at the screen's edge.
 
 ## Components
 

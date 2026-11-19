@@ -11,6 +11,14 @@ import { Title } from './Title';
 type ScreenProps = PropsWithChildren<{
   /** The serif title at the top: "Tonight", "Kitchen". */
   title: string;
+  /**
+   * The content is a list that scrolls by itself, such as a SectionList. Screen then
+   * leaves the scrolling to it, since a list inside a ScrollView would lose its own.
+   * The list should set contentInsetAdjustmentBehavior="automatic", so its rows can
+   * pass under the tab bar but the last one still ends above it, and pad its content
+   * by the space[4] gutter, as Screen does for other content.
+   */
+  list?: boolean;
 }>;
 
 /**
@@ -18,14 +26,15 @@ type ScreenProps = PropsWithChildren<{
  * the gear that opens Settings. The gear sits in the same place on every tab, so
  * nobody has to remember which tab has it.
  */
-export function Screen({ title, children }: ScreenProps) {
+export function Screen({ title, list = false, children }: ScreenProps) {
   const colors = useColors();
   const router = useRouter();
 
   return (
     // The safe area keeps the content clear of the status bar and the tab bar.
+    // A list runs on under the tab bar, and iOS insets its rows to clear the bar.
     <SafeAreaView
-      edges={['top', 'bottom']}
+      edges={list ? ['top'] : ['top', 'bottom']}
       style={[styles.screen, { backgroundColor: colors.canvas }]}>
       <View style={styles.titleRow}>
         <Title size="largeTitle" style={styles.title}>
@@ -39,23 +48,30 @@ export function Screen({ title, children }: ScreenProps) {
           />
         </View>
       </View>
-      {/* A ScrollView, so nothing is cut off at the largest text sizes. */}
-      <ScrollView contentContainerStyle={styles.body} alwaysBounceVertical={false}>
-        {children}
-      </ScrollView>
+      {list ? (
+        <View style={styles.list}>{children}</View>
+      ) : (
+        // A ScrollView, so nothing is cut off at the largest text sizes.
+        <ScrollView contentContainerStyle={styles.body} alwaysBounceVertical={false}>
+          {children}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  // The side gutter is inside the title row and the scrolling content, not around the
+  // whole screen, so a scroll bar sits at the screen's edge, as in iOS's own apps.
+  // There a thumb can hold it to drag through a long list.
   screen: {
     flex: 1,
-    paddingHorizontal: space[4],
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: space[2],
+    paddingHorizontal: space[4],
   },
   title: {
     flex: 1,
@@ -65,9 +81,12 @@ const styles = StyleSheet.create({
     // lines the icon itself up with the edge of the content.
     marginRight: -(size.tapTarget - ICON_SIZE) / 2,
   },
+  list: {
+    flex: 1,
+  },
   body: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingVertical: space[4],
+    padding: space[4],
   },
 });
