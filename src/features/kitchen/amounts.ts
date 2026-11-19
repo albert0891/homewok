@@ -4,7 +4,7 @@
  * Nothing here knows any food. A label such as "block" is only display text.
  */
 import type { Batch } from '@/data/rows';
-import { fromBase, type Unit, unitOf } from '@/data/units';
+import { fromBase, type Unit, type UnitId, unitOf } from '@/data/units';
 
 /** Fractions, written the way a recipe card writes them. */
 const FRACTIONS = [
@@ -75,14 +75,17 @@ function wordFor(unit: Unit, label: string | null, quantity: number): string {
   return many ? (unit.plural ?? unit.word) : unit.word;
 }
 
+/** A number in a unit as text: "1½ lb", "2 blocks", "10". The stepper and its chips show this. */
+export function formatQuantity(quantity: number, unitId: UnitId, label: string | null): string {
+  const word = wordFor(unitOf(unitId), label, quantity);
+  return word === '' ? formatNumber(quantity) : `${formatNumber(quantity)} ${word}`;
+}
+
 type Amount = Pick<Batch, 'amount' | 'unit' | 'label' | 'is_estimate'>;
 
 /** One amount as text: "1½ lb", "2 blocks", "10". A guess starts with "~". */
 export function formatAmount({ amount, unit: unitId, label, is_estimate }: Amount): string {
-  const quantity = fromBase(amount, unitId);
-  const word = wordFor(unitOf(unitId), label, quantity);
-  const text = word === '' ? formatNumber(quantity) : `${formatNumber(quantity)} ${word}`;
-
+  const text = formatQuantity(fromBase(amount, unitId), unitId, label);
   return is_estimate ? `~${text}` : text;
 }
 

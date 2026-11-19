@@ -36,22 +36,23 @@ function RootNavigator() {
     return null;
   }
 
+  // The native iOS sheet, as tall as its content (design/components/BottomSheet.md).
+  const sheet = {
+    presentation: 'formSheet',
+    sheetAllowedDetents: 'fitToContents',
+    sheetGrabberVisible: true,
+    sheetCornerRadius: radius.sheet,
+    contentStyle: { backgroundColor: colors.surface },
+  } as const;
+
   // Each guard decides which screens exist. When someone signs in or out, the
   // router moves them to the right side by itself.
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }}>
       <Stack.Protected guard={isSignedIn}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen
-          name="settings"
-          options={{
-            presentation: 'formSheet',
-            sheetAllowedDetents: 'fitToContents',
-            sheetGrabberVisible: true,
-            sheetCornerRadius: radius.sheet,
-            contentStyle: { backgroundColor: colors.surface },
-          }}
-        />
+        <Stack.Screen name="settings" options={sheet} />
+        <Stack.Screen name="add-food" options={sheet} />
       </Stack.Protected>
 
       <Stack.Protected guard={!isSignedIn}>

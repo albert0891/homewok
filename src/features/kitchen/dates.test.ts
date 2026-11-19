@@ -1,4 +1,4 @@
-import { addDays, dateNote, daysUntil, estimateUseBy, formatDay, toDay } from './dates';
+import { addDays, dateNote, daysUntil, estimateUseBy, formatDay, toDay, useByText } from './dates';
 
 // Thursday, November 12, 2026.
 const today = '2026-11-12';
@@ -97,5 +97,24 @@ describe('estimateUseBy', () => {
     expect(estimateUseBy('fridge', today)).toBe('2026-11-19');
     expect(estimateUseBy('freezer', today)).toBe('2027-02-10');
     expect(estimateUseBy('pantry', today)).toBe('2027-05-11');
+  });
+});
+
+describe('useByText', () => {
+  it('writes a guess with "about" and no weekday, as the Kitchen list does', () => {
+    expect(useByText('2026-11-19', 'estimated', today)).toBe('Use by about Nov 19');
+    expect(useByText('2027-05-11', 'estimated', today)).toBe('Use by about May 11');
+  });
+
+  it('writes a date from the package with its weekday', () => {
+    expect(useByText('2026-11-19', 'use_by', today)).toBe('Use by Thu, Nov 19');
+  });
+
+  it('writes a near date as a date too, not as a use-soon pill', () => {
+    expect(useByText('2026-11-13', 'sell_by', today)).toBe('Use by Fri, Nov 13');
+  });
+
+  it('adds the year when the date is most of a year away', () => {
+    expect(useByText('2027-11-12', 'estimated', today)).toBe('Use by about Nov 12, 2027');
   });
 });

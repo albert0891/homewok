@@ -1,5 +1,17 @@
 # Dev Log
 
+## 2026-11-19
+
+- **Add a food by hand (`HW-12`).** The Kitchen's title row has a + just left of the gear, and the empty kitchen has an Add food button under the scallion doodle. Both open the edit sheet, a native form sheet with a name field, the stepper with its unit control and one-tap amounts, Fridge, Freezer, and Pantry, the estimated date, and Save. Save goes through `addPurchase` and the queue (`HW-53`), so the food shows at once, and a save the database refuses is undone with the queue's alert.
+- What the sheet shows is worked out in `src/features/kitchen/sheetDraft.ts`. A name the household knows fills in its usual purchase as it is typed: Eggs show 12 with no unit control, and Firm tofu 2 blocks. A new food starts at 1 lb in the fridge, with lb, oz, and count to pick from. The reasons, and what a new food cannot do yet, are under Adding Stock in `docs/decisions.md`.
+- New components from the design system: `Stepper`, `SegmentedControl`, `Chip`, and `TextField` for the name. `Screen` takes an `add` button for the title row, and `EmptyState` an `action`.
+- Tests first: 23 new tests (16 for the sheet, 4 for `useByText`, 2 for `formatQuantity`, and 1 for `NEW_FOOD_UNITS`) failed before the code existed. `npm run check` passes with 271 tests.
+- Found on the Simulator: while the screen set the name field's text back on every key, letters typed in fast by the Simulator's typing tool were lost ("Pork belly" arrived as "P"), so the field now keeps its own text and the sheet only listens. At the largest accessibility text size the unit control was squeezed beside the stepper, one letter per line, and the storage control broke "Fridge" inside the word. Now the unit control goes under the stepper from the accessibility sizes, a segment's label stays on one line and shrinks to fit, and the stepper's − and + grow with the text, up to twice their size. These rules are in `design/components/` (SegmentedControl and Stepper), and the design system artifact is republished (Version 27). `STACKED_TEXT_SCALE` moved from the Kitchen screen to `src/theme/theme.ts`, since both screens use it.
+- Checked on the iPhone 18 Pro Simulator against the real Supabase, all five checks. Pork belly, 1 lb, Fridge appeared under Fridge as "Use by about Nov 26", and the database has it with `date_source` estimated. Eggs showed 12 with no unit control, and Firm tofu 2 blocks. Freezer gave Feb 17 and Pantry May 18, 90 and 180 days out. A name over 80 characters, let through by a temporary change, was refused by the database's name check, undone on screen, and the alert said so. The empty kitchen, switched on in code for a moment, opened the same sheet. Also an empty name ("Type the food’s name first."), light and dark mode, and the XXXL and largest accessibility text sizes. Both temporary changes are reverted.
+- Not checked: the iPhone 17e and 18 Pro Max, since another Simulator would need a Google sign-in; VoiceOver itself; and Save while offline, which goes through the same queue as every change.
+- New backlog cards: `HW-62` (at XXXL a past-date food's name breaks inside a word in the Kitchen list), `HW-63` (type an exact amount in the stepper), and `HW-64` (a new liquid, or a new counted food's own word, by hand).
+- The Pork belly from the first check is still in the household, so trying that check again would add a second purchase to its row. Whether it goes is the user's call.
+
 ## 2026-11-18
 
 - PR #6 (`HW-53`) was merged as `9c141ed`.
