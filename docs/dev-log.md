@@ -36,6 +36,10 @@
 - **Decided: where the add button goes.** A + just left of the gear, on the tabs that add things, now under Adding Stock in `docs/decisions.md` instead of Still Discussing. `HW-12`'s first check names the place, and a new check adds the empty kitchen's Add food button.
 - From the same questions: a new backlog card, `HW-61`, for a search field and place filter chips on the Kitchen tab, ranked after `HW-18`; a fourth check on `HW-17`, that Low and Out stand out as pills while Have stays quiet; and opening a row to edit stays with `HW-13`.
 - `npm run check` passes with 248 tests.
+- **Headers, second pass.** The user still saw the headers floating, so Apple's Files app on the same Simulator served as the reference: its section headers are about 20pt bold, with about 24pt above and 8pt below, and are inset like ours. Ours were the same 17pt as the rows, with 16pt above. They are now `title-3`, a new text style for iOS's Title 3 (20/25, semibold, in the system font), with `space-6` above and `space-2` below. `Title` draws it and caps it at 55/20, the largest Title 3 in Apple's Dynamic Type table. `design/` (the tokens, the README, and ListGroup) and the design system artifact (Version 24) follow.
+- Checked on the iPhone 18 Pro Simulator: the top of the list and the gap from Fridge to Freezer at the default size, and the largest accessibility size, where a header grows only a little past the food names, as iOS's own Title 3 does.
+- `HW-12`'s first check now adds Pork belly, which the sample kitchen does not have: a food already in the Fridge would join its row as a second purchase, and the row would not show the new date.
+- `npm run check` passes with 248 tests.
 
 ## 2026-11-17
 

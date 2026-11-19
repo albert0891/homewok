@@ -24,8 +24,8 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 ## Type
 
 - Set screen titles in `large-title`, dish names in `title-1`, and sheet titles and empty-state headlines in `title-2`. These use the serif family (`ui-serif`, Apple's New York) and appear nowhere else.
-- Set everything else in the system sans: `body` for names and steps, `headline` for button labels and list section headers, `subhead` for meta lines, `footnote` for helper text, `caption` for pills and tab labels.
-- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it. Titles stop at the largest sizes iOS itself gives them: 60px for `large-title`, 58px for `title-1`, and 56px for `title-2`.
+- Set everything else in the system sans: `title-3` for list section headers, `body` for names and steps, `headline` for button labels, `subhead` for meta lines, `footnote` for helper text, `caption` for pills and tab labels.
+- The sizes are the iOS defaults for Dynamic Type. Let text grow with the user's text size setting, and never fix a height that would clip it. Titles stop at the largest sizes iOS itself gives them: 60px for `large-title`, 58px for `title-1`, 56px for `title-2`, and 55px for `title-3`.
 - Line up numbers in amounts and costs with tabular figures.
 
 ## Space and shape
@@ -68,7 +68,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 - Mirror `tokens.json` in one theme file in the app, and read colors by name for the current color scheme. Components never contain hex values.
 - Use `fontFamily: 'ui-serif'` for titles; React Native supports the iOS generic families. Use the default system font for everything else.
-- React Native grows all text by one factor, so cap titles with `maxFontSizeMultiplier`: 60/34 for `large-title`, 58/28 for `title-1`, and 56/22 for `title-2`.
+- React Native grows all text by one factor, so cap titles with `maxFontSizeMultiplier`: 60/34 for `large-title`, 58/28 for `title-1`, 56/22 for `title-2`, and 55/20 for `title-3`.
 - Build lists on `FlatList` or `SectionList`, sheets on the native sheet presentation, and tabs on Expo Router's native tabs.
 - Put the screen gutter inside a scrolling view's content (`contentContainerStyle`), not around the view, so its scroll bar sits at the screen's edge.
 

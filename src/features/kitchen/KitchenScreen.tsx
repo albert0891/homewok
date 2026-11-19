@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/Button';
 import { EmptyState } from '@/components/EmptyState';
 import { Screen } from '@/components/Screen';
+import { Title } from '@/components/Title';
 import { type Household, useHousehold } from '@/data/household';
 import { radius, size, space, type, useColors } from '@/theme/theme';
 
@@ -100,17 +101,15 @@ function NothingToList({ household }: { household: Household }) {
 }
 
 /**
- * A place's name over its group, in headline and ink: a step stronger than the food
- * names under it, since the place is what the eye looks for first. iOS's own content
- * lists do the same; small gray headers suit a settings form.
+ * A place's name over its group, in title3: a size above the food names under it, and
+ * closer to its own group than to the one before, so it reads as that group's heading.
+ * iOS's own content lists, such as the Files app, do the same.
  */
 function SectionHeader({ title }: { title: string }) {
-  const colors = useColors();
-
   return (
-    <Text accessibilityRole="header" style={[type.headline, styles.header, { color: colors.ink }]}>
+    <Title size="title3" style={styles.header}>
       {title}
-    </Text>
+    </Title>
   );
 }
 
@@ -186,9 +185,10 @@ const styles = StyleSheet.create({
   failedText: {
     textAlign: 'center',
   },
+  // More room above a header than below it, so it belongs to the group under it.
   header: {
     paddingHorizontal: space[4],
-    paddingTop: space[4],
+    paddingTop: space[6],
     paddingBottom: space[2],
   },
   row: {
