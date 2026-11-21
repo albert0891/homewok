@@ -54,6 +54,14 @@ export const radius = { md: 10, lg: 16, sheet: 24, pill: 9999 } as const;
 
 export const size = { tapTarget: 44, rowHeight: 52 } as const;
 
+/**
+ * From this text size up, a row that holds several things puts them on lines of their
+ * own, as iOS's own lists do: a Kitchen row, and the amount row in the edit sheet. 1.6 is
+ * about where iOS's accessibility sizes begin: body text there is 28pt, against 17pt at
+ * the default size.
+ */
+export const STACKED_TEXT_SCALE = 1.6;
+
 /** Apple's serif, New York. Titles only. */
 const serif = 'ui-serif';
 

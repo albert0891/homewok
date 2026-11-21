@@ -107,6 +107,15 @@ export function dateNote(useBy: Day, source: Batch['date_source'], today: Day): 
   return { type: 'later', text: laterText(useBy, source === 'estimated', days) };
 }
 
+/**
+ * The date line in the edit sheet, in the same words as the Kitchen list's meta line:
+ * "Use by about Nov 19" for a guess, "Use by Thu, Nov 19" for a date from the package.
+ * A near date is written as a date here too, since the sheet has no use-soon pill.
+ */
+export function useByText(useBy: Day, source: Batch['date_source'], today: Day): string {
+  return laterText(useBy, source === 'estimated', daysUntil(useBy, today));
+}
+
 /** The app's guess at a use-by date for food that goes into a storage place today. */
 export function estimateUseBy(storage: StorageId, today: Day): Day {
   return addDays(today, storageOf(storage).keepsDays);
