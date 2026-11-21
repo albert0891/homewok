@@ -1,5 +1,14 @@
 # Dev Log
 
+## 2026-11-21
+
+- **Order of milestone 2 reviewed, and the cards changed to match** (no code). Three cards had checks that needed a card ranked after them: `HW-15` and `HW-17` end with Add to list, which `HW-19` builds, and `HW-17` also needs `HW-18`'s check-off. The order in Jira is now `HW-13`, `HW-14`, `HW-16`, `HW-19`, `HW-15`, `HW-18`, `HW-17`, the new `HW-65`, `HW-20` with `HW-26`, `HW-62`, `HW-61`, `HW-63`.
+- `HW-19`'s first check (Add to list after using up the milk) moved to `HW-15`, and `HW-19` got a check that the list survives closing the app.
+- No card said how a row opens the edit sheet, which purchase a row with several opens, or where deleting happens. `HW-13` got two checks (a row opens the sheet; a food with several purchases lists them first), and `HW-16` got a Delete button at the bottom of the sheet with a confirmation. Both are proposals the user can change on the card. `docs/decisions.md` says so under Adding Stock.
+- New card `HW-65`: change or remove a shopping item. Only adding and checking off had cards.
+- `HW-26` is the bug that `HW-20`'s third check describes, so the two are done in one pull request. A comment on `HW-26` says so.
+- `HW-64` moved to the milestone 3 epic, since its own note says it can wait until quick add shows what the sheet must still offer. `HW-59` (a warning before signing out with changes waiting) stays outside any epic, as the user decided.
+
 ## 2026-11-18
 
 - PR #6 (`HW-53`) was merged as `9c141ed`.
