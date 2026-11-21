@@ -21,6 +21,8 @@ type UnitShape = {
   word: string;
   /** The word for more than one, when it differs: "2 cups". */
   plural?: string;
+  /** What the unit control in the edit sheet calls it. */
+  name: string;
   /** How much one tap on the stepper adds or takes away. */
   step: number;
   /** One-tap amounts offered under the stepper. */
@@ -28,15 +30,23 @@ type UnitShape = {
 };
 
 export const UNITS = [
-  { id: 'lb', kind: 'weight', size: 453.59237, word: 'lb', step: 0.5, chips: [0.5, 1, 2] },
-  { id: 'oz', kind: 'weight', size: 28.349523125, word: 'oz', step: 2, chips: [4, 8, 12] },
-  { id: 'fl oz', kind: 'volume', size: 29.5735295625, word: 'fl oz', step: 4, chips: [8, 16, 32] },
-  { id: 'cup', kind: 'volume', size: 236.5882365, word: 'cup', plural: 'cups', step: 0.5, chips: [0.5, 1, 2] },
-  { id: 'gal', kind: 'volume', size: 3785.411784, word: 'gal', step: 0.5, chips: [0.5, 1, 2] },
-  { id: 'count', kind: 'count', size: 1, word: '', step: 1, chips: [0.5, 1, 2] },
+  { id: 'lb', kind: 'weight', size: 453.59237, word: 'lb', name: 'lb', step: 0.5, chips: [0.5, 1, 2] },
+  { id: 'oz', kind: 'weight', size: 28.349523125, word: 'oz', name: 'oz', step: 2, chips: [4, 8, 12] },
+  { id: 'fl oz', kind: 'volume', size: 29.5735295625, word: 'fl oz', name: 'fl oz', step: 4, chips: [8, 16, 32] },
+  { id: 'cup', kind: 'volume', size: 236.5882365, word: 'cup', plural: 'cups', name: 'cup', step: 0.5, chips: [0.5, 1, 2] },
+  { id: 'gal', kind: 'volume', size: 3785.411784, word: 'gal', name: 'gal', step: 0.5, chips: [0.5, 1, 2] },
+  { id: 'count', kind: 'count', size: 1, word: '', name: 'count', step: 1, chips: [0.5, 1, 2] },
 ] as const satisfies readonly UnitShape[];
 
 export type UnitId = (typeof UNITS)[number]['id'];
+
+/**
+ * The units the edit sheet offers a food the household has not bought before: it can
+ * be weighed or counted, the usual cases at the store. A food the household knows is
+ * offered the units of its own kind instead, so a liquid such as milk gets fl oz,
+ * cup, and gal once it is known.
+ */
+export const NEW_FOOD_UNITS: readonly UnitId[] = ['lb', 'oz', 'count'];
 
 export type Unit = UnitShape & { id: UnitId };
 

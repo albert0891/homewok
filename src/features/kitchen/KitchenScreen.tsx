@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   ActivityIndicator,
@@ -13,17 +14,10 @@ import { EmptyState } from '@/components/EmptyState';
 import { Screen } from '@/components/Screen';
 import { Title } from '@/components/Title';
 import { type Household, useHousehold } from '@/data/household';
-import { radius, size, space, type, useColors } from '@/theme/theme';
+import { radius, size, space, STACKED_TEXT_SCALE, type, useColors } from '@/theme/theme';
 
 import { type KitchenRow, type KitchenSection, kitchenSections, rowLabel } from './kitchenList';
 import { useToday } from './useToday';
-
-/**
- * From this text size up, a row puts the pill and the amount on a line under the
- * name, as iOS's own lists do. 1.6 is about where iOS's accessibility sizes begin:
- * body text there is 28pt, against 17pt at the default size.
- */
-const STACKED_TEXT_SCALE = 1.6;
 
 /**
  * The Kitchen tab: Fridge, Freezer, Pantry, and Staples as inset groups, one row per
@@ -33,20 +27,23 @@ const STACKED_TEXT_SCALE = 1.6;
 export function KitchenScreen() {
   const household = useHousehold();
   const today = useToday();
+  const router = useRouter();
   const { data } = household;
   const sections = useMemo(() => (data ? kitchenSections(data, today) : []), [data, today]);
+  // The + in the title row and the empty kitchen's button both open the edit sheet.
+  const addFood = { label: 'Add food', onPress: () => router.push('/add-food') };
 
   // With nothing to list, the screen is laid out like the other tabs' empty states,
   // centered in the same place.
   if (sections.length === 0) {
     return (
-      <Screen title="Kitchen">
-        <NothingToList household={household} />
+      <Screen title="Kitchen" add={addFood}>
+        <NothingToList household={household} addFood={addFood} />
       </Screen>
     );
   }
   return (
-    <Screen title="Kitchen" list>
+    <Screen title="Kitchen" list add={addFood}>
       <SectionList
         sections={sections}
         keyExtractor={(row) => row.key}
@@ -71,11 +68,16 @@ export function KitchenScreen() {
   );
 }
 
+type NothingToListProps = {
+  household: Household;
+  addFood: { label: string; onPress: () => void };
+};
+
 /**
  * What the screen shows when there are no rows: the empty kitchen, a read that failed
  * before there was any copy on the phone, or the first read still on its way.
  */
-function NothingToList({ household }: { household: Household }) {
+function NothingToList({ household, addFood }: NothingToListProps) {
   const colors = useColors();
 
   if (household.data) {
@@ -84,6 +86,7 @@ function NothingToList({ household }: { household: Household }) {
         doodle="scallion"
         headline="Your kitchen is empty"
         sentence="The food you have at home will be listed here."
+        action={addFood}
       />
     );
   }

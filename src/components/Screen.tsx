@@ -19,14 +19,19 @@ type ScreenProps = PropsWithChildren<{
    * by the space[4] gutter, as Screen does for other content.
    */
   list?: boolean;
+  /**
+   * A tab that adds things, such as the Kitchen, gets a + just left of the gear:
+   * what VoiceOver calls it ("Add food"), and what it opens.
+   */
+  add?: { label: string; onPress: () => void };
 }>;
 
 /**
  * The frame every tab shares: the canvas, the safe area, a large serif title, and
  * the gear that opens Settings. The gear sits in the same place on every tab, so
- * nobody has to remember which tab has it.
+ * nobody has to remember which tab has it, and a tab's + goes to its left.
  */
-export function Screen({ title, list = false, children }: ScreenProps) {
+export function Screen({ title, list = false, add, children }: ScreenProps) {
   const colors = useColors();
   const router = useRouter();
 
@@ -40,7 +45,8 @@ export function Screen({ title, list = false, children }: ScreenProps) {
         <Title size="largeTitle" style={styles.title}>
           {title}
         </Title>
-        <View style={styles.gear}>
+        <View style={styles.buttons}>
+          {add && <IconButton symbol="plus" label={add.label} onPress={add.onPress} />}
           <IconButton
             symbol="gearshape"
             label="Settings"
@@ -76,9 +82,10 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
   },
-  gear: {
-    // An icon button's tap area is wider than its icon. Pulling it into the gutter
-    // lines the icon itself up with the edge of the content.
+  buttons: {
+    flexDirection: 'row',
+    // An icon button's tap area is wider than its icon. Pulling the gear into the
+    // gutter lines the icon itself up with the edge of the content.
     marginRight: -(size.tapTarget - ICON_SIZE) / 2,
   },
   list: {
