@@ -40,7 +40,7 @@ v1 is done when the six milestones and the deploy step below are signed off. Usi
 | Recipes | Its own tab: the recipes you saved or cooked, with an empty state until the first one |
 | Kitchen | Inset grouped list by Fridge, Freezer, Pantry, and Staples, with the add button |
 | Add sheet | Quick-add line, voice, a photo of a receipt or of the groceries, Recent chips, and the rows to confirm |
-| Edit sheet | Amount, unit, storage, optional spot, date, and optional price, all on the phone |
+| Edit sheet | Name, how a new food is kept track of, amount and unit, storage, optional spot, date, and optional price, all on the phone. An opened row adds Used some, Used up, and Delete, and a staple shows Have, Low, or Out |
 | Shopping list | Items with one-tap checks, and Add to list |
 | Settings | A sheet opened with the gear on every tab: people, foods to avoid, cuisines, reminder time and days, and sign out |
 

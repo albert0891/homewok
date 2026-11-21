@@ -5,7 +5,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 - Write in plain, warm English. Short sentences, sentence case everywhere, no exclamation marks, no emoji.
 - The tagline is "All wok, no work." It turns the homework sound of the name into a joke, so never write copy that frames dinner as homework or a task.
 - Buttons start with a verb: "Cook this", "Add 3 items", "Save", "Not tonight". Toasts state what happened: "Tofu moved to Kitchen".
-- Use US units: lb, oz, fl oz, cup, gal. Write ½ and 1½, not 0.5. Counted foods keep their own word: "2 blocks", "1 bunch".
+- Use US units: lb, oz, fl oz, cup, gal. Write ½ and 1½, not 0.5. A counted food is a plain number, "12", unless it came with a word of its own: "2 blocks".
 - Write dates as "Wed, Nov 11". A guess always says so: "~1 lb", "Use by about Dec 8", "estimated".
 - Keep the user's own words for food names, in any language they type. Recipes are written in English.
 - Never guilt or nag. Say "Threw away", not "Wasted". Never say a food is safe or unsafe; say "Past date, check first".
@@ -16,7 +16,7 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 - Put every screen on `canvas`. Put lists, cards, sheets, and fields on `surface`.
 - Set text in `ink`, list section headers included; meta lines and helper text in `ink-muted`.
 - Use `accent` (persimmon) for the one primary button on a screen, the check of a bought item, and the active tab. Never for running text: accent-colored words use `accent-ink`.
-- Show use-soon foods with an `accent-tint` pill and `accent-ink` text. Show past-date foods with `danger` text and the words "Past date". These two always differ by their words, not just their hue.
+- Show use-soon foods with an `accent-tint` pill and `accent-ink` text. Show past-date foods with `danger` text and the words "Past date". These two always differ by their words, not just their hue. A destructive button, such as Delete purchase, also uses `danger`, and its label says what it deletes.
 - Draw dividers with `hairline` and the outlines of chips, fields, steppers, and secondary buttons with `control-border`.
 - Show keyboard focus as a solid 2px `focus` ring, offset 2px.
 - Dark mode is "Warm charcoal": the same token names with dark values, so components never pick colors by theme themselves. Text on an accent fill is always `on-accent`.
@@ -74,12 +74,12 @@ Homewok is a personal iOS app for Chinese families in the US. It keeps track of 
 
 ## Components
 
-- `Button`: capsule; one primary per screen.
+- `Button`: capsule; one primary per screen, and a `danger` text button for deleting.
 - `Chip`: quick choices such as Cook with foods and one-tap amounts.
 - `UseSoonPill`: when a food needs using, and the past-date warning.
 - `ListGroup`: the inset grouped kitchen list.
 - `ShoppingRow`: one tap marks a food bought and moves it to the Kitchen.
 - `Stepper`: change an amount without typing.
-- `SegmentedControl`: unit and storage.
+- `SegmentedControl`: how a new food is kept track of, unit, a staple's level, and storage.
 - `BottomSheet`: add, edit, cook, and other focused tasks.
 - `EmptyState`: doodle, one line, one action.
