@@ -121,10 +121,11 @@ Built on 2026-11-17 (`HW-53`). Every screen from `HW-11` on reads and saves thro
 ### Amounts
 
 - Code only knows three amount kinds: weight, volume, and count. A label such as "stalk" is display text, and no logic depends on it.
-- Deduction rule: same kind and same label means subtract. Anything else means ask None, Some, or All. "Some" takes half of what is left and marks the amount as an estimate.
+- **Using food by hand (2026-11-21, `HW-15`):** nothing asks how much was used. A Kitchen row offers Used up and Used some. Used up removes the purchases in that row's storage and asks whether to add the food to the shopping list, with the last amount bought. Used some takes half of what is left and marks it as a guess, with "~". Counting each cup of milk is more effort than opening the fridge, so exact amounts come off only with Cooked it, from the recipe.
+- Deduction rule, used by Cooked it (milestone 4): same kind and same label means subtract. Anything else means ask None, Some, or All. "Some" takes half of what is left and marks the amount as an estimate.
 - A deduction takes from the purchase with the soonest date first. Amounts that cannot be added, such as 1 bunch and 3 stalks, are shown side by side and halved separately by "Some" (2026-11-12).
 - Each unit is one line of data in `src/data/units.ts`: its size in the base unit, its word, its stepper step, and its one-tap amounts. A total across purchases uses the largest of their units. Since `HW-60` the database also checks the unit, so a new one needs a small migration too (see What milestone 2 built).
-- Using a food up keeps the food, with its usual purchase, and offers Add to list. Removing a food's last purchase removes the food too, so a food added by mistake leaves nothing behind (2026-11-12).
+- Using a food up keeps the food, with its usual purchase, and asks whether to add it to the shopping list. Removing a food's last purchase removes the food too, so a food added by mistake leaves nothing behind (2026-11-12).
 
 ## Where Logic Lives
 
@@ -175,7 +176,7 @@ The code is in two languages, and each rule lives in only one of them (2026-11-1
 
 - One button. The sheet is pre-filled with recipe amounts, so with no differences you just confirm.
 - Adjust servings, and set each ingredient to None, Some, the recipe amount, or All. Undo is available.
-- Cooking without a recipe uses "Used some" on the ingredient. Staples are not deducted.
+- Cooking without a recipe uses Used some or Used up on the ingredient. Staples are not deducted.
 - The sheet also asks how many servings are left, plus an optional rating and photo.
 
 ### Leftovers
