@@ -1,7 +1,7 @@
 import { batch } from '@/data/testRows';
 import { toBase } from '@/data/units';
 
-import { formatAmount, formatNumber, formatTotal, nudge } from './amounts';
+import { formatAmount, formatNumber, formatQuantity, formatTotal, nudge } from './amounts';
 
 describe('formatNumber', () => {
   it.each([
@@ -57,6 +57,20 @@ describe('formatAmount', () => {
 
   it('marks a guess with ~', () => {
     expect(formatAmount(batch({ amount: 2, label: 'block', is_estimate: true }))).toBe('~2 blocks');
+  });
+});
+
+describe('formatQuantity', () => {
+  it('writes a number in a unit, as the stepper and its chips show it', () => {
+    expect(formatQuantity(1.5, 'lb', null)).toBe('1½ lb');
+    expect(formatQuantity(2, 'cup', null)).toBe('2 cups');
+    expect(formatQuantity(2, 'count', 'block')).toBe('2 blocks');
+    expect(formatQuantity(0.5, 'count', 'bunch')).toBe('½ bunch');
+    expect(formatQuantity(12, 'count', null)).toBe('12');
+  });
+
+  it('keeps a word only for counted foods', () => {
+    expect(formatQuantity(1, 'lb', 'block')).toBe('1 lb');
   });
 });
 

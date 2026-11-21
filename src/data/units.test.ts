@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { fromBase, toBase, unitOf, UNITS, unitsOfKind } from './units';
+import { fromBase, NEW_FOOD_UNITS, toBase, unitOf, UNITS, unitsOfKind } from './units';
 
 describe('units', () => {
   it('turns what a person types into grams, ml, or pieces', () => {
@@ -27,7 +27,7 @@ describe('units', () => {
     expect(unitsOfKind('count').map((unit) => unit.id)).toEqual(['count']);
   });
 
-  it('gives every unit its own id, a size, and a stepper step', () => {
+  it('gives every unit its own id, a size, a stepper step, and a name for the unit control', () => {
     const ids = UNITS.map((unit) => unit.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const unit of UNITS) {
@@ -35,7 +35,13 @@ describe('units', () => {
       expect(unit.size).toBeGreaterThan(0);
       expect(unit.step).toBeGreaterThan(0);
       expect(unit.chips.length).toBeGreaterThan(0);
+      expect(unit.name.trim()).not.toBe('');
     }
+  });
+
+  it('offers a food bought for the first time a way to weigh it or count it', () => {
+    expect(NEW_FOOD_UNITS).toEqual(['lb', 'oz', 'count']);
+    expect(new Set(NEW_FOOD_UNITS.map((id) => unitOf(id).kind))).toEqual(new Set(['weight', 'count']));
   });
 });
 
