@@ -1,5 +1,13 @@
 # Dev Log
 
+## 2026-11-21
+
+- **Planning rule: whole screens first (`HW-68`).** Reading `HW-12`'s sheet showed two cases nobody had decided: a new liquid cannot be added by hand, and typing a staple's name turns it into a weighed food (`HW-66`). Both come from the edit sheet being built in pieces by separate cards, with no design of the whole sheet. Its first design had the AI guess a new food's kind, and since the + opens the sheet empty (2026-11-18), nothing asks for it. `HW-12` also decided a new food's units itself and recorded it afterwards. `CLAUDE.md` rules 7 and 8 and `docs/decisions.md` (Milestone Sign-off, Whole screens first) now say: design a screen whole before its cards, name a food of each kind in a story's checks, and ask before building when neither the card nor the docs settle a case.
+- New design task `HW-67` for the whole edit sheet, ranked first in milestone 2. In Jira, `HW-13`, `HW-14`, `HW-63`, `HW-64`, and `HW-66` are linked as blocked by it, and `HW-17`, `HW-19`, and `HW-65` as related to it.
+- `HW-64` is back in milestone 2, reversing today's move to milestone 3 (#12). Milestone 2's done-when is adding foods without any AI, and the card's own note saying it could wait for quick add was wrong; the note is rewritten.
+- Milestone 2's other cards, read by kind of food: no check uses a liquid in `HW-13`, `HW-15`, `HW-18`, `HW-19`, or `HW-65`. In the current code, using 1 cup of ½ gal of milk leaves "0.4 gal" on the Kitchen list, and 1 lb of pork less 5 oz leaves "0.7 lb", because an amount that is not a kitchen fraction is written with one decimal in the largest unit. A new food checked off the shopping list without an amount arrives as "~1", counted. New checks for these wait for the user's approval.
+- How long `sheetFor` takes per keystroke, measured on the real code in Node on the Mac with a name that matches no food: 0.006 ms with 30 foods, 0.04 ms with 300, and 0.38 ms with 3,000.
+
 ## 2026-11-18
 
 - PR #6 (`HW-53`) was merged as `9c141ed`.
