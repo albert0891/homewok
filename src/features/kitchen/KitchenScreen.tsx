@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   ActivityIndicator,
@@ -12,6 +11,7 @@ import {
 import { Button } from '@/components/Button';
 import { EmptyState } from '@/components/EmptyState';
 import { Screen } from '@/components/Screen';
+import { useOpenSheet } from '@/components/useOpenSheet';
 import { Title } from '@/components/Title';
 import { type Household, useHousehold } from '@/data/household';
 import { radius, size, space, STACKED_TEXT_SCALE, type, useColors } from '@/theme/theme';
@@ -27,11 +27,11 @@ import { useToday } from './useToday';
 export function KitchenScreen() {
   const household = useHousehold();
   const today = useToday();
-  const router = useRouter();
+  const openSheet = useOpenSheet();
   const { data } = household;
   const sections = useMemo(() => (data ? kitchenSections(data, today) : []), [data, today]);
   // The + in the title row and the empty kitchen's button both open the edit sheet.
-  const addFood = { label: 'Add food', onPress: () => router.push('/add-food') };
+  const addFood = { label: 'Add food', onPress: () => openSheet('/add-food') };
 
   // With nothing to list, the screen is laid out like the other tabs' empty states,
   // centered in the same place.

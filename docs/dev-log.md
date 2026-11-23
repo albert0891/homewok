@@ -1,5 +1,12 @@
 # Dev Log
 
+## 2026-11-22
+
+- **Tapping + many times broke the sheet (`HW-71`).** Each tap on the Kitchen's + called `router.push('/add-food')`, which adds a new screen every time, so quick taps stacked several sheets while the first was still sliding up (in a development build it takes a few seconds to appear). The Settings gear did the same with `/settings`. On the Simulator, three quick taps on + gave a sheet drawn full width with no grabber and no dimmed background.
+- New `useOpenSheet` in `src/components/useOpenSheet.ts` returns a function that opens a sheet once: it ignores a tap when the path is already the sheet's, or when a push was just made and the screen has not drawn the new path yet (the sheet's first draw keeps the JavaScript thread busy, so the path alone is not enough). The lock lifts when the path changes. `KitchenScreen.tsx` and `Screen.tsx` use it.
+- Checked on the iPhone 18 Pro Simulator with the real Supabase: three quick taps give one sheet, closing it shows the Kitchen, and a later tap opens it again. `npm run check` passes with 271 tests. No test was written, because Jest cannot drive the navigation. Not checked: the gear tapped repeatedly, other iPhone sizes, a release build.
+- Note for later: the sheet's slow first appearance is what invites repeat taps. It was not measured in a release build.
+
 ## 2026-11-21
 
 - **Order of milestone 2 reviewed, and the cards changed to match** (no code). Three cards had checks that needed a card ranked after them: `HW-15` and `HW-17` end with Add to list, which `HW-19` builds, and `HW-17` also needs `HW-18`'s check-off. The order in Jira is now `HW-13`, `HW-14`, `HW-16`, `HW-19`, `HW-15`, `HW-18`, `HW-17`, the new `HW-65`, `HW-20` with `HW-26`, `HW-62`, `HW-61`, `HW-63`.
