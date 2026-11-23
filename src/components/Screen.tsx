@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import type { PropsWithChildren } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +6,7 @@ import { size, space, useColors } from '@/theme/theme';
 
 import { ICON_SIZE, IconButton } from './IconButton';
 import { Title } from './Title';
+import { useOpenSheet } from './useOpenSheet';
 
 type ScreenProps = PropsWithChildren<{
   /** The serif title at the top: "Tonight", "Kitchen". */
@@ -33,7 +33,7 @@ type ScreenProps = PropsWithChildren<{
  */
 export function Screen({ title, list = false, add, children }: ScreenProps) {
   const colors = useColors();
-  const router = useRouter();
+  const openSheet = useOpenSheet();
 
   return (
     // The safe area keeps the content clear of the status bar and the tab bar.
@@ -47,11 +47,7 @@ export function Screen({ title, list = false, add, children }: ScreenProps) {
         </Title>
         <View style={styles.buttons}>
           {add && <IconButton symbol="plus" label={add.label} onPress={add.onPress} />}
-          <IconButton
-            symbol="gearshape"
-            label="Settings"
-            onPress={() => router.push('/settings')}
-          />
+          <IconButton symbol="gearshape" label="Settings" onPress={() => openSheet('/settings')} />
         </View>
       </View>
       {list ? (
