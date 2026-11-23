@@ -153,7 +153,11 @@ function FoodRow({ row, section, first, last }: FoodRowProps) {
             <Text style={[type.caption, { color: colors.accentInk }]}>{row.pill}</Text>
           </View>
         )}
-        {row.warning && <Text style={[type.caption, { color: colors.danger }]}>{row.warning}</Text>}
+        {row.warning && (
+          <Text style={[type.caption, { color: colors.danger }]}>
+            {row.warning}
+          </Text>
+        )}
         <Text style={[type.body, styles.amount, { color: amountColor }]}>{row.amount}</Text>
       </View>
     </View>
