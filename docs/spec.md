@@ -1,6 +1,6 @@
 # Homewok v1 Spec
 
-Last updated: 2026-11-16. Status: approved by the user on 2026-11-10. The changes listed at the end were approved on the days shown.
+Last updated: 2026-11-21. Status: approved by the user on 2026-11-10. The changes listed at the end were approved on the days shown.
 
 This is the scope of the first version: what we build, in what order, and how we know each step is done. The reasons and the detailed rules live in `docs/decisions.md`. The visual rules live in the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k
 
@@ -13,7 +13,7 @@ v1 is done when the six milestones and the deploy step below are signed off. Usi
 ## In v1
 
 - Sign in with Google.
-- Kitchen: foods grouped by storage, batches, use-soon pills, staples, the edit sheet with an optional spot, and Used some.
+- Kitchen: foods grouped by storage, batches, use-soon pills, staples, the edit sheet with an optional spot, and Used up and Used some.
 - Adding food: the quick-add line, Recent chips, the manual edit sheet, photos of a receipt or of the groceries on a table, and voice.
 - Shopping list: one tap moves a food to the Kitchen, and Add to list works the other way.
 - Tonight: 3 ideas from current stock, Not tonight, Cook with, Cooked it with leftovers, a planned dinner, and a rough cost per serving.
@@ -53,7 +53,7 @@ Each milestone ends with something usable on the iOS Simulator or the user's pho
 | # | Milestone | Main work | Rough time |
 | - | --------- | --------- | ---------- |
 | 1 | Login | Expo project, Supabase project, Google sign-in, stay signed in, sign out, empty tabs | 1 to 2 weeks |
-| 2 | Kitchen by hand | Tables and row-level security, Kitchen list, edit sheet with an optional spot, Used some, staples, shopping list, sample data button, CI | 2 to 3 weeks |
+| 2 | Kitchen by hand | Tables and row-level security, Kitchen list, edit sheet with an optional spot, Used up and Used some, staples, shopping list, sample data button, CI | 2 to 3 weeks |
 | 3 | Quick add | The AI server in Python and FastAPI, run on the Mac, where Gemini turns a typed list into rows. Recent chips, rate limits | 2 to 3 weeks |
 | 4 | Tonight | Ideas from stock, recipe page, Cooked it with leftovers, Not tonight, Cook with, planned dinner, cost per serving | 3 weeks |
 | – | Deploy | The AI server as a Docker image on AWS, CI/CD that deploys it when the checks pass, and quick add timed again from the phone | 2 to 3 weeks |
@@ -117,3 +117,4 @@ Decided since the spec was approved:
 - Pull requests (2026-11-16): Claude commits on a branch and opens a pull request, and the user reviews and merges it.
 - Spot (2026-11-16): an optional label for where in a storage a purchase sits, such as "Drawer 2".
 - Table photos (2026-11-16): a photo of the groceries on a table joins receipts in milestone 6, now called Photos and voice.
+- Using food (2026-11-21): by hand, a food is marked Used up or Used some with one tap, and no amount is asked. Used up asks whether to add the food to the shopping list. Exact amounts come off with Cooked it, from the recipe.
