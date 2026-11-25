@@ -1,6 +1,6 @@
 # Homewok v1 Spec
 
-Last updated: 2026-11-21. Status: approved by the user on 2026-11-10. The changes listed at the end were approved on the days shown.
+Last updated: 2026-11-24. Status: approved by the user on 2026-11-10. The changes listed at the end were approved on the days shown.
 
 This is the scope of the first version: what we build, in what order, and how we know each step is done. The reasons and the detailed rules live in `docs/decisions.md`. The visual rules live in the Homewok design system: https://claude.ai/artifact/WCfXhKPjTHYSUJrDqFKe7k
 
@@ -40,7 +40,7 @@ v1 is done when the six milestones and the deploy step below are signed off. Usi
 | Recipes | Its own tab: the recipes you saved or cooked, with an empty state until the first one |
 | Kitchen | Inset grouped list by Fridge, Freezer, Pantry, and Staples, with the add button |
 | Add sheet | Quick-add line, voice, a photo of a receipt or of the groceries, Recent chips, and the rows to confirm |
-| Edit sheet | Amount, unit, storage, optional spot, date, and optional price, all on the phone |
+| Edit sheet | Name, how a new food is kept track of, amount and unit, storage, optional spot, date, and optional price, all on the phone. An opened row adds Used some, Used up, and Delete, and a staple shows Have, Low, or Out |
 | Shopping list | Items with one-tap checks, and Add to list |
 | Settings | A sheet opened with the gear on every tab: people, foods to avoid, cuisines, reminder time and days, and sign out |
 
@@ -117,4 +117,4 @@ Decided since the spec was approved:
 - Pull requests (2026-11-16): Claude commits on a branch and opens a pull request, and the user reviews and merges it.
 - Spot (2026-11-16): an optional label for where in a storage a purchase sits, such as "Drawer 2".
 - Table photos (2026-11-16): a photo of the groceries on a table joins receipts in milestone 6, now called Photos and voice.
-- Using food (2026-11-21): by hand, a food is marked Used up or Used some with one tap, and no amount is asked. Used up asks whether to add the food to the shopping list. Exact amounts come off with Cooked it, from the recipe.
+- Using food (2026-11-21, reworded 2026-11-24): by hand, a food is marked Used up or Used some in two taps, its row and then the button, and no amount is asked. Used up asks whether to add the food to the shopping list. Exact amounts come off with Cooked it, from the recipe.
