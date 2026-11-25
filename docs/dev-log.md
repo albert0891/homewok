@@ -19,6 +19,7 @@
 - The design system's edit sheet preview draws nine cases at 375 points wide: a new food of each kind (Bok choy, Oat milk, Silken tofu, and Doubanjiang), two known foods (Ground pork and Firm tofu), a row with one purchase (Milk), a row with two (Ground pork), and a staple (Soy sauce). SegmentedControl, Button, and ListGroup show the new parts too, and `danger` now also colors a destructive button (`design/tokens.json`). The artifact is republished (Version 36), without `tokens.css` and `manifest.json`, which its page generates.
 - In Jira, `HW-13` (now also renaming), `HW-14`, `HW-15`, `HW-16`, `HW-17`, `HW-19`, `HW-63`, `HW-64`, `HW-65`, and `HW-66` match the design. `HW-64` lost its check that typed the word block. New cards: `HW-69`, a swipe on a row as a shortcut for Used some and Used up, outside any epic; and `HW-70`, the design task for the whole Shopping tab, which the same rule asks for, ranked before `HW-19`.
 - Checked as renders 375 points wide in light and dark with headless Chrome, not on the Simulator. No app code changed.
+- **Two taps, not one (2026-11-24, `HW-67`).** `docs/spec.md` and `HW-15`'s story still said Used up and Used some take one tap, written before the sheet was drawn. Under the food's name in an opened row they take two, the row and then the button, and the question that chose that place did not point it out. The user had the wording changed to two taps. `HW-15`'s checks did not change. `HW-69` as written is not one tap either: its swipe shows a button that is then tapped.
 
 ## 2026-11-19
 
